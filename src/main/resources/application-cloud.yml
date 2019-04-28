@@ -1,0 +1,9 @@
+# Cloud config for dockerized environments.
+spring:
+  profiles: cloud
+  cloud:
+    kubernetes:
+        reload:
+            enabled: true
+            strategy: refresh
+

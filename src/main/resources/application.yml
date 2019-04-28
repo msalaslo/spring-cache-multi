@@ -1,0 +1,12 @@
+# For standard Spring Boot parameters see:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+server:
+  servlet:
+    context-path: /correlation
+    
+spring:
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
