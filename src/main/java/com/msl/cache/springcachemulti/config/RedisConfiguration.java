@@ -166,13 +166,7 @@ public class RedisConfiguration {
         return localRedisCacheManager;
     }
     
-//	@Bean
-	public RedisTemplate<String, Object> redisTemplate() {
-		RedisTemplate<String, Object> template = new RedisTemplate<>();
-//	    template.setConnectionFactory(redisConnectionFactory());
-		template.setConnectionFactory(lettuceConnectionFactory());
-		return template;
-	}
+
     
     @Bean
     public RedisMappingContext keyValueMappingContext() {
