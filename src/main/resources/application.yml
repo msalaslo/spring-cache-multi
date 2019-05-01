@@ -6,12 +6,29 @@ server:
     
 spring:
   cache:
-    type: redis
+    caffeine:
+      configurations:
+        - cacheName: cameras
+          #initialCapacity:
+          maximumSize: 100
+          #maximumWeight:
+          #expireAfterAccess: #SECONDS
+          #expireAfterWrite: #SECONDS
+          #refreshAfterWrite: #SECONDS
+          #concurrencyLevel:
+        - cacheName: serials
+          #initialCapacity:
+          maximumSize: 100
+          #maximumWeight:
+          #expireAfterAccess: #SECONDS
+          #expireAfterWrite: #SECONDS
+          #refreshAfterWrite: #SECONDS
+          #concurrencyLevel:
+     
   redis:
     database: 0 # Database index used by the connection factory.
-    url: # Connection URL, will override host, port and password (user will be ignored), e.g. redis://user:password@example.com:6379
-    host: 127.0.0.1 # Redis server host.
-    port: 6379 # Redis server port.
+    host: 192.168.99.100 # Redis server host.
+    port: 32768 # Redis server port.
     password: # Login password of the redis server.
     ssl: false # Enable SSL support.
     timeout: 0 # Connection timeout in milliseconds.
@@ -24,7 +41,7 @@ spring:
     cluster:
       enabled: false
       max-redirects: 10 # Maximum number of redirects to follow when executing commands across the cluster.
-      nodes: 127.0.0.1:6379 # Comma-separated list of "host:port" pairs to bootstrap from.
+      nodes: 127.0.0.1:32768 # Comma-separated list of "host:port" pairs to bootstrap from.
     sentinel:
       enabled: false
       master: mymaster # Name of Redis server.

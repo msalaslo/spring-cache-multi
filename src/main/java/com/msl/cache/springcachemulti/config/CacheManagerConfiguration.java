@@ -10,11 +10,11 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 public class CacheManagerConfiguration {
 
-//    /**
-//     * The caffeine cache manager.
-//     */
-//    @Autowired
-//    private CacheManager caffeineCacheManager;
+    /**
+     * The caffeine cache manager.
+     */
+    @Autowired
+    private CacheManager caffeineCacheManager;
 
     /**
      * The redis cache manager.
@@ -32,8 +32,8 @@ public class CacheManagerConfiguration {
     public CacheManager cacheManager() {
         // Es importante el orden que se añaden los cache manager al CompositeCacheManager.
         // En caso de que compartan la misma CACHE_NAME, por defecto tomara la primera cacheManager añadida.
-//        return new CompositeCacheManager(caffeineCacheManager, redisCacheManager);
-    	return new CompositeCacheManager(redisCacheManager);
+        return new CompositeCacheManager(caffeineCacheManager, redisCacheManager);
+//    	return new CompositeCacheManager(redisCacheManager);
     }
 }
 

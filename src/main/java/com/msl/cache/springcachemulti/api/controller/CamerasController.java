@@ -25,19 +25,19 @@ public class CamerasController {
 	CameraService service;
 
 	@GetMapping(path = "/{id}")
-	public Camera findById(@PathVariable String id) {
+	public Camera get(@PathVariable String id) {
 		LOGGER.info("Finding cameras by id..." + id);
 		return service.findById(id);
 	}
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-	public ResponseEntity<Camera> post(@RequestBody Camera Camera) {
+	public ResponseEntity<Camera> create(@RequestBody Camera Camera) {
 		this.service.create(Camera);
 		return new ResponseEntity<>(Camera, HttpStatus.CREATED);
 	}
 
 	@DeleteMapping("/{id}")
-	void deleteEmployee(@PathVariable String id) {
+	void delete(@PathVariable String id) {
 		service.deleteById(id);
 	}
 }

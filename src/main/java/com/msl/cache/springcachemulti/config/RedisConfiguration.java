@@ -80,6 +80,8 @@ public class RedisConfiguration {
         if (sentinelEnabled) {
             RedisSentinelConfiguration redisSentinelConfiguration = new RedisSentinelConfiguration();
             redisSentinelConfiguration.setMaster(sentinelMaster);
+            redisSentinelConfiguration.setDatabase(database);
+            redisSentinelConfiguration.setPassword(password);
             for (String sentinelNode : sentinelNodes) {
                 String sentinelHost = sentinelNode.split(":")[0];
                 Integer sentinelPort = Integer.parseInt(sentinelNode.split(":")[1]);
@@ -89,11 +91,13 @@ public class RedisConfiguration {
         } else if (clusterEnabled) {
             RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(clusterNodes);
             redisClusterConfiguration.setMaxRedirects(clusterMaxRedirects);
+            redisClusterConfiguration.setPassword(password);
             return new LettuceConnectionFactory(redisClusterConfiguration);
         } else {            
             RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
             config.setDatabase(database);
             config.setHostName(host);
+            config.setPort(port);
             config.setPassword(password);
             return new LettuceConnectionFactory(config);
         }
