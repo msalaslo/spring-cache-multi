@@ -20,6 +20,9 @@
     <logger name="com.verisure" level="DEBUG" />
     <logger name="com.netflix" level="INFO" />
     <logger name="org.springframework" level="INFO" />
+    <logger name="org.springframework.cache" level="DEBUG" />
+    <logger name="com.github.benmanes.caffeine" level="DEBUG" />
+    
 
     <root level="warn">
         <appender-ref ref="CONSOLE" />

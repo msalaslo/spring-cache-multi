@@ -23,32 +23,30 @@ public class CameraRepository {
 
         LOGGER.debug("Retrieving the whole list of application items!");
 
-        return Arrays.asList(getDummyCamera());
+        return Arrays.asList(getDummyCamera("ESP", "123456", "23"));
     }
 
     public void save(Camera camera) {
 
-        LOGGER.debug("Application item with ID {} added", camera.getId());
+        LOGGER.debug("Application item with ID {} added", camera.getCountry() + camera.getInstallation() + camera.getZone());
     }
     
-    public Camera findById(String id) {
-        LOGGER.info("Camera item with ID {} added", id);
+    public Camera findById(String country, String installation, String zone) {
+        LOGGER.info("Camera item with ID {} added", country + installation + zone);
 
-        return getDummyCamera();
+        return getDummyCamera(country, installation, zone);
     }
     
-    public String deleteById(String id) {
-        return id;
+    public String deleteById(String country, String installation, String zone) {
+        return country + installation + zone;
     }
     
-    private Camera getDummyCamera() {
-        String installation = UUID.randomUUID().toString();
+    private Camera getDummyCamera(String country, String installation, String zone) {
         String serial = UUID.randomUUID().toString();
         Camera camera = Camera.builder()
-                .id("ESP" + installation + "01")
-                .country("ESP")
+                .country(country)
                 .installation(installation)
-                .zone("01")
+                .zone(zone)
                 .serial(serial)
                 .build();
         return camera;

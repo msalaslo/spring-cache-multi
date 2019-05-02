@@ -24,10 +24,10 @@ public class CamerasController {
 	@Autowired
 	CameraService service;
 
-	@GetMapping(path = "/{id}")
-	public Camera get(@PathVariable String id) {
-		LOGGER.info("Finding cameras by id..." + id);
-		return service.findById(id);
+	@GetMapping(path = "/{country}/{installation}/{zone}")
+	public Camera get(@PathVariable String country, @PathVariable String installation, @PathVariable String zone) {
+		LOGGER.info("Finding cameras by id..." + country + installation + zone);
+		return service.findById(country, installation, zone);
 	}
 
     @PostMapping(consumes = "application/json", produces = "application/json")
@@ -36,8 +36,8 @@ public class CamerasController {
 		return new ResponseEntity<>(Camera, HttpStatus.CREATED);
 	}
 
-	@DeleteMapping("/{id}")
-	void delete(@PathVariable String id) {
-		service.deleteById(id);
+	@DeleteMapping("/{country}/{installation}/{zone}")
+	void delete(@PathVariable String country, @PathVariable String installation, @PathVariable String zone) {
+		service.deleteById(country, installation, zone);
 	}
 }

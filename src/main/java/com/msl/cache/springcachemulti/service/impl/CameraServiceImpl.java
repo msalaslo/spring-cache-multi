@@ -20,19 +20,24 @@ public class CameraServiceImpl implements CameraService{
 	CameraRepository repository;
 
 	@Cacheable(cacheNames = "cameras")
-    public Camera findById(String id){
-		LOGGER.info("Dentro del servicio buscado por id:" + id);
-    	return repository.findById(id);
+    public Camera findById(String country, String installation, String zone){
+		LOGGER.info("Dentro del servicio buscado por id:" + country + installation + zone);
+    	return repository.findById(country, installation, zone);
     }
 	
-	@CachePut(value="cameras", key="#id")
 	public void create(Camera camera) {
+		repository.save(camera);
+		put(camera);
+	}
+	
+	@CachePut(value="cameras")
+	public void put(Camera camera) {
 		repository.save(camera);
 	}
 	
-	@CacheEvict(value = "cameras", key = "#id")
-    public void deleteById(String id){
-		repository.deleteById(id);
+	@CacheEvict(value = "cameras")
+    public void deleteById(String country, String installation, String zone){
+		repository.deleteById(country, installation, zone);
     }
 	
 //	public void load(Collection<Camera> cameras) {
