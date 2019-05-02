@@ -37,8 +37,8 @@ public class CameraRepository {
         return getDummyCamera(country, installation, zone);
     }
     
-    public String deleteById(String country, String installation, String zone) {
-        return country + installation + zone;
+    public Boolean deleteById(String country, String installation, String zone) {
+        return true;
     }
     
     private Camera getDummyCamera(String country, String installation, String zone) {

@@ -15,7 +15,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.msl" level="DEBUG" />
+    <logger name="com.msl" level="INFO" />
 
     <logger name="com.verisure" level="DEBUG" />
     <logger name="com.netflix" level="INFO" />

@@ -9,11 +9,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisSentinelConfiguration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -118,5 +118,29 @@ public class RedisConfiguration {
        return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(lettuceConnectionFactory)
                         .cacheDefaults(redisCacheConfiguration).build();
     }
+    
+    /**
+     * Since it is quite common for the keys and values stored in Redis to be java.lang.String, 
+     * the Redis modules provides two extensions to RedisConnection and RedisTemplate.
+     * For String intensive operations consider the dedicated StringRedisTemplate.
+     * @return StringRedisTemplate
+     */
+	@Bean
+	public StringRedisTemplate stringRedisTemplate() {
+		StringRedisTemplate template = new StringRedisTemplate();
+//	    template.setConnectionFactory(redisConnectionFactory());
+		template.setConnectionFactory(lettuceConnectionFactory());
+		return template;
+	}
+    
+	@Bean
+	public RedisTemplate<String, Object> redisTemplate() {
+		RedisTemplate<String, Object> template = new RedisTemplate<>();
+//	    template.setConnectionFactory(redisConnectionFactory());
+		template.setConnectionFactory(lettuceConnectionFactory());
+		return template;
+	}
+	
+	
 }
 

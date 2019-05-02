@@ -28,7 +28,7 @@ spring:
   redis:
     database: 0 # Database index used by the connection factory.
     host: 192.168.99.100 # Redis server host.
-    port: 32768 # Redis server port.
+    port: 6379 # Redis server port.
     password: # Login password of the redis server.
     ssl: false # Enable SSL support.
     timeout: 0 # Connection timeout in milliseconds.
@@ -46,4 +46,21 @@ spring:
       enabled: false
       master: mymaster # Name of Redis server.
       nodes: 127.0.0.1:27379 # Comma-separated list of host:port pairs.
-    
+ 
+# =========================
+# HEALTH INDICATORS (previously health.*)
+# =========================
+management:
+  health:
+    defaults:
+      enabled: true # Enable default health indicators
+    db:
+      enabled: true # Enable database health check
+    diskspace:
+      enabled: false # Enable disk space health check
+      path: / # Path used to compute the available disk space
+      threshold: 0 # Minimum disk space that should be available, in bytes
+    redis:
+      enabled: true # Enable Redis health check
+    status:
+      order: DOWN, OUT_OF_SERVICE, UNKNOWN, UP # Comma-separated list of health statuses in order of severity   
