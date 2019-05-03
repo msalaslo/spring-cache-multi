@@ -18,6 +18,8 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
+import com.msl.cache.springcachemulti.domain.entity.Camera;
+
 import lombok.Data;
 
 /**
@@ -134,8 +136,16 @@ public class RedisConfiguration {
 	}
     
 	@Bean
-	public RedisTemplate<String, Object> redisTemplate() {
+	public RedisTemplate<String, Object> redisTemplateGeneric() {
 		RedisTemplate<String, Object> template = new RedisTemplate<>();
+//	    template.setConnectionFactory(redisConnectionFactory());
+		template.setConnectionFactory(lettuceConnectionFactory());
+		return template;
+	}
+	
+	@Bean
+	public RedisTemplate<String, Camera> redisTemplate() {
+		RedisTemplate<String, Camera> template = new RedisTemplate<>();
 //	    template.setConnectionFactory(redisConnectionFactory());
 		template.setConnectionFactory(lettuceConnectionFactory());
 		return template;

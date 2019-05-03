@@ -2,7 +2,8 @@ package com.msl.cache.springcachemulti.domain.entity;
 
 import java.io.Serializable;
 
-import org.springframework.data.annotation.Id;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,17 +14,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity
 public class Camera implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
 	@Id
+	public String id;
 	public String country;
-	@Id
 	public String installation;
-	@Id
 	public String zone;
-	
 	public String serial;
 
 }
