@@ -12,15 +12,6 @@ public class CameraHandler {
 		}
 	}
 	
-	public static Camera generateAndSetIdNreCamera(Camera camera) {
-		Camera newCamera = new Camera();
-		if(camera != null) {
-			if(camera.getId() == null) {
-				camera.setId(generateId(camera.getCountry(), camera.getInstallation(), camera.getZone()));
-			}
-		}
-	}
-	
 	public static String generateId(String country, String installation, String zone) {
 		return country + installation + zone;
 	}

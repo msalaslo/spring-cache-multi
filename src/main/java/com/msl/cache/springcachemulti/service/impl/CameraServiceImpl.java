@@ -40,22 +40,22 @@ public class CameraServiceImpl implements CameraService {
 		return repository.findById(id);
 	}
 
-	@CachePut(key = "#id", value = "cameras", cacheManager = "cacheManager", condition = "#camera != null")
+	@CachePut(key = "#camera.id", value = "cameras", cacheManager = "cacheManager")
 	public Camera create(Camera camera) {
 		LOGGER.info("create:" + camera);
 		return repository.save(camera);
 	}
 
 	@CachePut(key = "#id", value = "cameras", cacheManager = "cacheManager")
-	public Camera update(Camera newCamera, String id) {
-		LOGGER.info("update camera {} with id {}:", newCamera, id);
+	public Camera update(Camera camera, String id) {
+		LOGGER.info("update camera {} with id {}:", camera, id);
 		
-		return repository.findById(id).map(camera -> {
-			camera.setSerial(newCamera.getSerial());
+		return repository.findById(id).map(newCamera -> {
+			camera.setSerial(camera.getSerial());
 			return repository.save(camera);
 		}).orElseGet(() -> {
-			newCamera.setId(id);
-			return repository.save(newCamera);
+			camera.setId(id);
+			return repository.save(camera);
 		});
 	}
 

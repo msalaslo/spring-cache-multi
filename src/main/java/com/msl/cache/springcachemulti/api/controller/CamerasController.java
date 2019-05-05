@@ -52,7 +52,7 @@ public class CamerasController {
 	@PostMapping(path = "/cameras", consumes = "application/json", produces = "application/json")
 	@ResponseStatus(HttpStatus.CREATED)
 	public Camera create(@RequestBody Camera camera) {
-		//TODO: Revisar el seteo de la Id desde un controller
+		//TODO: Revisar el seteo del Id desde un controller
 		CameraHandler.generateAndSetId(camera);
 		service.create(camera);
 		return camera;
