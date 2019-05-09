@@ -34,7 +34,7 @@ public class CamerasController {
 
 	@GetMapping(path = "/cameras/{id}")
 	public ResponseEntity<Camera> getById(@PathVariable String id) {
-		LOGGER.info("Finding camerasid by id..." + id);
+		LOGGER.info("Finding cameras by id:" + id);
 		return service.findById(id).
 				map(camera -> ResponseEntity.ok().body(camera)) // 200 OK
 				.orElseGet(() -> ResponseEntity.notFound().build()); // 404 Not found
@@ -43,12 +43,12 @@ public class CamerasController {
 	@GetMapping(path = "/cameras", produces = "application/json")
 	public ResponseEntity<Camera> get(@RequestParam String country, @RequestParam String installation,
 			@RequestParam String zone) {
-		LOGGER.info("Finding cameras by id..." + country + installation + zone);
-		return service.findById(country, installation, zone).
+		LOGGER.info("Finding cameras by country: {}, installation: {}, zone: {}", country , installation , zone);
+		return service.findBy(country, installation, zone).
 				map(camera -> ResponseEntity.ok().body(camera)) // 200 OK
 				.orElseGet(() -> ResponseEntity.notFound().build()); // 404 Not found
 	}
-
+	
 	@PostMapping(path = "/cameras", consumes = "application/json", produces = "application/json")
 	@ResponseStatus(HttpStatus.CREATED)
 	public Camera create(@RequestBody Camera camera) {

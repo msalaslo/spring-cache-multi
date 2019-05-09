@@ -1,9 +1,11 @@
 package com.msl.cache.springcachemulti.domain.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,15 +17,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
+@Table(name = "CAMERA")
 public class Camera implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-	public String id;
-	public String country;
-	public String installation;
-	public String zone;
 	public String serial;
+	public String id;
+	public String countryCode;
+	public String installationId;
+	public String zone;
+	public String password;
+	public String alias;
+	public Date creationTime;
+	public Date lastUpdateTime;
+	public String vossServices;
 
 }

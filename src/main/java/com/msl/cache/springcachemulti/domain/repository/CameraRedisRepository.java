@@ -28,7 +28,7 @@ public class CameraRedisRepository {
 
 	public void save(Camera camera) {
 		LOGGER.debug("Application item with ID {} adding",
-				camera.getCountry() + camera.getInstallation() + camera.getZone());
+				camera.getCountryCode() + camera.getInstallationId() + camera.getZone());
 		redisTemplate.opsForList().leftPush("test", camera);
 	}
 

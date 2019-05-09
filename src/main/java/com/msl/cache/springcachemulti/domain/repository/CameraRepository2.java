@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CameraRepository2 {
 
     public Camera save(Camera camera) {
-        LOGGER.debug("Application item with ID {} added", camera.getCountry() + camera.getInstallation() + camera.getZone());
+        LOGGER.debug("Application item with ID {} added", camera.getCountryCode() + camera.getInstallationId() + camera.getZone());
         return camera;
     }
     
@@ -48,8 +48,8 @@ public class CameraRepository2 {
     private Camera getDummyCamera(String country, String installation, String zone) {
         String serial = UUID.randomUUID().toString();
         Camera camera = Camera.builder()
-                .country(country)
-                .installation(installation)
+                .countryCode(country)
+                .installationId(installation)
                 .zone(zone)
                 .serial(serial)
                 .build();

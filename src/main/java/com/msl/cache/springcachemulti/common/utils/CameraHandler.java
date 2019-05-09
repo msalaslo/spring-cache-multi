@@ -7,7 +7,7 @@ public class CameraHandler {
 	public static void generateAndSetId(Camera camera) {
 		if(camera != null) {
 			if(camera.getId() == null) {
-				camera.setId(generateId(camera.getCountry(), camera.getInstallation(), camera.getZone()));
+				camera.setId(generateId(camera.getCountryCode(), camera.getInstallationId(), camera.getZone()));
 			}
 		}
 	}

@@ -3,8 +3,22 @@
 server:
   servlet:
     context-path: /correlation
+  port: 8083
     
+## use create when running the app for the first time
+## then change to "update" which just updates the schema when necessary
+#spring.jpa.hibernate.ddl-auto=create
 spring:
+  jpa:
+    #database-platform: org.hibernate.dialect.Oracle10gDialect
+    show-sql: false
+    open-in-view: true
+  datasource: 
+    url: jdbc:oracle:thin:@es1prerac03-scan:1521/PROTMPRE_SRV.sp.securitasdirect.local
+    username: RS_SCORR
+    password: RS_SCORR
+    driver-class-name: oracle.jdbc.OracleDriver
+    
   cache:
     caffeine:
       configurations:
