@@ -1,5 +1,9 @@
 package com.msl.cache.springcachemulti.api.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,14 +43,26 @@ public class CamerasController {
 				map(camera -> ResponseEntity.ok().body(camera)) // 200 OK
 				.orElseGet(() -> ResponseEntity.notFound().build()); // 404 Not found
 	}
-
+	
 	@GetMapping(path = "/cameras", produces = "application/json")
-	public ResponseEntity<Camera> get(@RequestParam String country, @RequestParam String installation,
-			@RequestParam String zone) {
-		LOGGER.info("Finding cameras by country: {}, installation: {}, zone: {}", country , installation , zone);
-		return service.findBy(country, installation, zone).
-				map(camera -> ResponseEntity.ok().body(camera)) // 200 OK
-				.orElseGet(() -> ResponseEntity.notFound().build()); // 404 Not found
+	public ResponseEntity<Iterable<Camera>> get(@RequestParam String country, @RequestParam String installation,
+			@RequestParam(value = "zone", required=false) final String zone) {
+		if(zone != null) {
+			LOGGER.info("Finding cameras by country: {}, installation: {}, zone: {}", country , installation , zone);
+			Optional<Camera> camera = service.findBy(country, installation, zone);
+			if(camera.isPresent()) {
+				List<Camera> cameras = new ArrayList<Camera>();
+				cameras.add(camera.get());
+				return new ResponseEntity<Iterable<Camera>>(cameras, HttpStatus.OK);
+			} else {
+				return ResponseEntity.notFound().build();
+			}
+//					map(camera -> ResponseEntity.ok().body(new Iterable(camera))) // 200 OK
+//					.orElseGet(() -> ResponseEntity.notFound().build()); // 404 Not found
+		}else {
+			LOGGER.info("Finding cameras by country: {}, installation: {}", country , installation);
+			return new ResponseEntity<Iterable<Camera>>(service.findBy(country, installation), HttpStatus.OK);
+		}
 	}
 	
 	@PostMapping(path = "/cameras", consumes = "application/json", produces = "application/json")

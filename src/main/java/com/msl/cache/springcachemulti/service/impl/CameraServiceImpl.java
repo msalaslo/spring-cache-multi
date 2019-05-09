@@ -21,19 +21,25 @@ public class CameraServiceImpl implements CameraService {
 	@Autowired
 	CameraRepository repository;
 
-	@Cacheable(value = "cameras/all", cacheManager = "cacheManager", unless = "#result == null")
+	@Cacheable(value = "cameras/all", cacheManager = "cacheManager", unless = "#result == null or #result.size()==0")
 	public Iterable<Camera> findAll() {
 		LOGGER.info("findAll");
 		return repository.findAll();
 	}
 
-	@Cacheable(value = "cameras/ByIndex", cacheManager = "cacheManager", unless = "#result == null")
+	@Cacheable(value = "cameras/ByCountryAndInstallationAndZone", cacheManager = "cacheManager", unless = "#result == null")
 	public Optional<Camera> findBy(String country, String installation, String zone) {
 		LOGGER.debug("findBy country {}, installation {}, zone{}:", country, installation, zone);
 		return repository.findByCountryCodeAndInstallationIdAndZone(country, installation, zone);
 	}
+	
+	@Cacheable(value = "cameras/ByCountryAndInstallation", cacheManager = "cacheManager", unless = "#result == null or #result.size()==0")
+	public Iterable<Camera> findBy(String country, String installation) {
+		LOGGER.debug("findBy country {}, installation {}", country, installation);
+		return repository.findByCountryCodeAndInstallationId(country, installation);
+	}
 
-	@Cacheable(key = "#id", value = "cameras/ById", cacheManager = "cacheManager", unless = "#result == null")
+	@Cacheable(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager", unless = "#result == null")
 	public Optional<Camera>  findById(String id) {
 		LOGGER.debug("findById:" + id);
 		return repository.findById(id);

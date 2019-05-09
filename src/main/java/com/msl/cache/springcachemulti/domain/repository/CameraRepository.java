@@ -17,5 +17,8 @@ import com.msl.cache.springcachemulti.domain.entity.Camera;
 public interface CameraRepository extends PagingAndSortingRepository<Camera, String>{
 	
 	public Optional<Camera> findByCountryCodeAndInstallationIdAndZone(String countrCode, String installationId, String zone);
+	
+	public Iterable<Camera> findByCountryCodeAndInstallationId(String countrCode, String installationId);
+
 
 }
