@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.msl.cache.springcachemulti.api.dto.CameraDTO;
+import com.msl.cache.springcachemulti.api.dto.PageDTO;
 import com.msl.cache.springcachemulti.common.utils.CameraHandler;
 import com.msl.cache.springcachemulti.domain.entity.Camera;
 import com.msl.cache.springcachemulti.service.CameraService;
@@ -30,45 +32,65 @@ public class CamerasController {
 	@Autowired
 	CameraService service;
 
-	//TODO: Revisar RestFull API
-//	@GetMapping(path = "/cameras", produces = "application/json")
-//	public Iterable<Camera> all() {
-//		return service.findAll();
-//	}
-
 	@GetMapping(path = "/cameras/{id}")
-	public ResponseEntity<Camera> getById(@PathVariable String id) {
-		LOGGER.info("Finding cameras by id:" + id);
-		return service.findById(id).
-				map(camera -> ResponseEntity.ok().body(camera)) // 200 OK
-				.orElseGet(() -> ResponseEntity.notFound().build()); // 404 Not found
+	public ResponseEntity<Iterable<Camera>> getById(@PathVariable(value = "id", required = true) final String id) {
+		LOGGER.info("Finding cameras by id (serial): {}", id);
+		Optional<Camera> camera = service.findById(id);
+		if (camera.isPresent()) {
+			List<Camera> cameras = new ArrayList<Camera>();
+			cameras.add(camera.get());
+			return new ResponseEntity<Iterable<Camera>>(cameras, HttpStatus.OK);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 	}
-	
+
 	@GetMapping(path = "/cameras", produces = "application/json")
-	public ResponseEntity<Iterable<Camera>> get(@RequestParam String country, @RequestParam String installation,
-			@RequestParam(value = "zone", required=false) final String zone) {
-		if(zone != null) {
-			LOGGER.info("Finding cameras by country: {}, installation: {}, zone: {}", country , installation , zone);
+	public ResponseEntity<Iterable<Camera>> get(@RequestParam(required = false) final String country,
+			@RequestParam(required = false) final String zone,
+			@RequestParam(required = false) final String installation) {
+		if (zone != null) {
+			LOGGER.info("Finding cameras by country: {}, installation: {}, zone: {}", country, installation, zone);
 			Optional<Camera> camera = service.findBy(country, installation, zone);
-			if(camera.isPresent()) {
+			if (camera.isPresent()) {
 				List<Camera> cameras = new ArrayList<Camera>();
 				cameras.add(camera.get());
 				return new ResponseEntity<Iterable<Camera>>(cameras, HttpStatus.OK);
 			} else {
 				return ResponseEntity.notFound().build();
 			}
-//					map(camera -> ResponseEntity.ok().body(new Iterable(camera))) // 200 OK
-//					.orElseGet(() -> ResponseEntity.notFound().build()); // 404 Not found
-		}else {
-			LOGGER.info("Finding cameras by country: {}, installation: {}", country , installation);
+		} else if (country != null && installation != null) {
+			LOGGER.info("Finding cameras by country: {}, installation: {}", country, installation);
 			return new ResponseEntity<Iterable<Camera>>(service.findBy(country, installation), HttpStatus.OK);
+//		}
+//		if (page != null && size != null) {
+//			LOGGER.info("Finding all cameras page: {} and size {}", page, size);			
+//			return new ResponseEntity<Iterable<Camera>>(service.findAll(page, size), HttpStatus.OK);
+		} else {
+			return ResponseEntity.badRequest().build();
 		}
 	}
 	
+	@GetMapping(path = "/cameras/page", produces = "application/json")
+	public ResponseEntity<PageDTO<CameraDTO>> findPaginated(
+			@RequestParam(required = true) final Integer page,
+			@RequestParam(required = true) final Integer size,
+			@RequestParam(required = false) final String sort) {
+
+			LOGGER.info("Finding all cameras page: {} and size {}", page, size);			
+			return new ResponseEntity<PageDTO<CameraDTO>>(service.findAll(page, size), HttpStatus.OK);
+	}
+
+	@GetMapping(path = "/vosses", produces = "application/json")
+	public ResponseEntity<Iterable<Camera>> getVosses(@RequestParam String country, @RequestParam String installation) {
+		LOGGER.info("Finding vosses by country: {}, installation: {}", country, installation);
+		return new ResponseEntity<Iterable<Camera>>(service.findVossDevices(country, installation), HttpStatus.OK);
+	}
+
 	@PostMapping(path = "/cameras", consumes = "application/json", produces = "application/json")
 	@ResponseStatus(HttpStatus.CREATED)
 	public Camera create(@RequestBody Camera camera) {
-		//TODO: Revisar el seteo del Id desde un controller
+		// TODO: Revisar el seteo del Id desde un controller
 		CameraHandler.generateAndSetId(camera);
 		service.create(camera);
 		return camera;

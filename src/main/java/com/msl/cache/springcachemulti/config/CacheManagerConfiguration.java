@@ -15,6 +15,12 @@ public class CacheManagerConfiguration {
      */
     @Autowired
     private CacheManager caffeineCacheManager;
+    
+    /**
+     * Caffeine cache configuration
+     */
+    @Autowired
+    private CaffeineCacheConfiguration caffeineCacheConfiguration;
 
     /**
      * The redis cache manager.
@@ -30,10 +36,13 @@ public class CacheManagerConfiguration {
     @Bean
     @Primary
     public CacheManager cacheManager() {
-        // Es importante el orden que se añaden los cache manager al CompositeCacheManager.
-        // En caso de que compartan la misma CACHE_NAME, por defecto tomara la primera cacheManager añadida.
-//        return new CompositeCacheManager(caffeineCacheManager, redisCacheManager);
-    	return new CompositeCacheManager(redisCacheManager);
+    	if (caffeineCacheConfiguration.isActive()) {
+            // Es importante el orden que se añaden los cache manager al CompositeCacheManager.
+            // En caso de que compartan la misma CACHE_NAME, por defecto tomara la primera cacheManager añadida.
+    		return new CompositeCacheManager(caffeineCacheManager, redisCacheManager);
+    	} else {
+    		return new CompositeCacheManager(redisCacheManager);
+    	}
     }
 }
 

@@ -167,7 +167,12 @@
             <version>12.2.0.1</version>
         </dependency>
 
-
+		<!-- Spring HATEOAS to manage web pagination -->
+		<dependency>
+			<groupId>org.springframework.hateoas</groupId>
+			<artifactId>spring-hateoas</artifactId>
+		</dependency>
+        
 		<!-- TEST DEPENDENCIES. -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

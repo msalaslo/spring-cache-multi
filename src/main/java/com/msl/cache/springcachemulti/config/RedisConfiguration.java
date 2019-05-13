@@ -14,7 +14,6 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
@@ -28,7 +27,6 @@ import lombok.Data;
  */
 @Data
 @Configuration
-@EnableRedisRepositories
 public class RedisConfiguration {
 
     //  Database index used by the connection factory.
@@ -71,6 +69,9 @@ public class RedisConfiguration {
     //
     @Value("${spring.redis.sentinel.enabled}")
     private Boolean sentinelEnabled;
+    
+    @Value("${spring.cache.redis.time-to-live.seconds}")
+    private long ttlSeconds;
 
     /**
      * Connection factory
@@ -114,7 +115,7 @@ public class RedisConfiguration {
     public RedisCacheManager redisCacheManager(LettuceConnectionFactory lettuceConnectionFactory) {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .disableCachingNullValues()
-                .entryTtl(Duration.ofHours(1))
+                .entryTtl(Duration.ofSeconds(ttlSeconds))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()));
         redisCacheConfiguration.usePrefix();
        return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(lettuceConnectionFactory)

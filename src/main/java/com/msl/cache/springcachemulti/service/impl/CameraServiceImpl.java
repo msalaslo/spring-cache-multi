@@ -6,8 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.msl.cache.springcachemulti.api.converter.CameraConverter;
+import com.msl.cache.springcachemulti.api.dto.CameraDTO;
+import com.msl.cache.springcachemulti.api.dto.PageDTO;
 import com.msl.cache.springcachemulti.domain.entity.Camera;
 import com.msl.cache.springcachemulti.domain.repository.CameraRepository;
 import com.msl.cache.springcachemulti.service.CameraService;
@@ -20,11 +26,17 @@ public class CameraServiceImpl implements CameraService {
 
 	@Autowired
 	CameraRepository repository;
+	
+	@Autowired
+	CameraConverter cameraConverter;
 
-	@Cacheable(value = "cameras/all", cacheManager = "cacheManager", unless = "#result == null or #result.size()==0")
-	public Iterable<Camera> findAll() {
+	@Cacheable(value = "cameras/all", cacheManager = "cacheManager", unless = "#result == null")
+	public PageDTO<CameraDTO> findAll(int page, int pageSize) {
 		LOGGER.info("findAll");
-		return repository.findAll();
+		Pageable pageable = PageRequest.of(page, pageSize);
+		Page<Camera> cameraPage = repository.findAll(pageable);
+		PageDTO<CameraDTO> camerasDtoPage = cameraConverter.mapCameraPageToDTO(null, cameraPage);
+		return camerasDtoPage;
 	}
 
 	@Cacheable(value = "cameras/ByCountryAndInstallationAndZone", cacheManager = "cacheManager", unless = "#result == null")
@@ -45,6 +57,18 @@ public class CameraServiceImpl implements CameraService {
 		return repository.findById(id);
 	}
 
+	@Cacheable(key = "#camera.id", value = "voss/all", cacheManager = "cacheManager", unless = "#result == null")
+	public Iterable<Camera>  findVossDevices() {
+		LOGGER.debug("findVossDevices, zone starts with VS");
+		return repository.findByZoneStartingWith("VS");
+	}
+	
+	@Cacheable(value = "voss/ByCountryAndInstallation", cacheManager = "cacheManager", unless = "#result == null or #result.size()==0")
+	public Iterable<Camera>  findVossDevices(String country, String installation) {
+		LOGGER.debug("findVossDevices, zone starts with VS and country is {} and installation is {}", country, installation);
+		return repository.findVossDevicesBy(country, installation);
+	}
+	
 	@CachePut(key = "#camera.id", value = "cameras", cacheManager = "cacheManager")
 	public Camera create(Camera camera) {
 		LOGGER.debug("create:" + camera);

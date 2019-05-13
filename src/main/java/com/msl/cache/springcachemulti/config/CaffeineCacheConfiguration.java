@@ -28,71 +28,74 @@ import lombok.Data;
 @Validated
 public class CaffeineCacheConfiguration {
 
-/** The configurations. */
-@Valid
-private List<CaffeineConfiguration> configurations;
+	/** The parameter to activate or deactivate the caffeine cache. */
+	public boolean active;
 
-/**
- * Instantiates a new Caffeine configuration.
- */
-@Data
-public static class CaffeineConfiguration {
+	/** The configurations. */
+	@Valid
+	private List<CaffeineConfiguration> configurations;
 
-    /** The cache name. */
-    private String cacheName;
+	/**
+	 * Instantiates a new Caffeine configuration.
+	 */
+	@Data
+	public static class CaffeineConfiguration {
 
-    /** The initial capacity. */
-    private Integer initialCapacity;
+		/** The cache name. */
+		private String cacheName;
 
-    /** The maximum size. */
-    private Integer maximumSize;
+		/** The initial capacity. */
+		private Integer initialCapacity;
 
-    /** The maximum weight. */
-    private Integer maximumWeight;
+		/** The maximum size. */
+		private Integer maximumSize;
 
-    /** The expire after access. */
-    private Integer expireAfterAccess;
+		/** The maximum weight. */
+		private Integer maximumWeight;
 
-    /** The expire after write. */
-    private Integer expireAfterWrite;
+		/** The expire after access. */
+		private Integer expireAfterAccess;
 
-    /** The refresh after write. */
-    private Integer refreshAfterWrite;
-}
+		/** The expire after write. */
+		private Integer expireAfterWrite;
 
-    /**
-     * Caffeine cache manager.
-     *
-     * @return the cache manager
-     */
-    @Bean(name = "caffeineCacheManager")
-    public CacheManager caffeineCacheManager() {
-        List<CaffeineCache> cacheList = new ArrayList<>();
-        SimpleCacheManager cacheManager = new SimpleCacheManager();
-        for (CaffeineCacheConfiguration.CaffeineConfiguration configuration : configurations) {
-            Caffeine<Object, Object> chacheBuilder = Caffeine.newBuilder();
-            if (configuration.getInitialCapacity() != null) {
-                chacheBuilder.initialCapacity(configuration.getInitialCapacity());
-            }
-            if (configuration.getMaximumSize() != null) {
-                chacheBuilder.maximumSize(configuration.getMaximumSize());
-            }
-            if (configuration.getMaximumWeight() != null) {
-                chacheBuilder.maximumWeight(configuration.getMaximumWeight());
-            }
-            if (configuration.getExpireAfterAccess() != null) {
-                chacheBuilder.expireAfterAccess(configuration.getExpireAfterAccess(), TimeUnit.SECONDS);
-            }
-            if (configuration.getExpireAfterWrite() != null) {
-                chacheBuilder.expireAfterWrite(configuration.getExpireAfterWrite(), TimeUnit.SECONDS);
-            }
-            if (configuration.getRefreshAfterWrite() != null) {
-                chacheBuilder.refreshAfterWrite(configuration.getRefreshAfterWrite(), TimeUnit.SECONDS);
-            }
-            CaffeineCache caffeineCache = new CaffeineCache(configuration.getCacheName(), chacheBuilder.build());
-            cacheList.add(caffeineCache);
-        }
-        cacheManager.setCaches(cacheList);
-        return cacheManager;
-    }
+		/** The refresh after write. */
+		private Integer refreshAfterWrite;
+	}
+
+	/**
+	 * Caffeine cache manager.
+	 *
+	 * @return the cache manager
+	 */
+	@Bean(name = "caffeineCacheManager")
+	public CacheManager caffeineCacheManager() {
+		List<CaffeineCache> cacheList = new ArrayList<>();
+		SimpleCacheManager cacheManager = new SimpleCacheManager();
+		for (CaffeineCacheConfiguration.CaffeineConfiguration configuration : configurations) {
+			Caffeine<Object, Object> chacheBuilder = Caffeine.newBuilder();
+			if (configuration.getInitialCapacity() != null) {
+				chacheBuilder.initialCapacity(configuration.getInitialCapacity());
+			}
+			if (configuration.getMaximumSize() != null) {
+				chacheBuilder.maximumSize(configuration.getMaximumSize());
+			}
+			if (configuration.getMaximumWeight() != null) {
+				chacheBuilder.maximumWeight(configuration.getMaximumWeight());
+			}
+			if (configuration.getExpireAfterAccess() != null) {
+				chacheBuilder.expireAfterAccess(configuration.getExpireAfterAccess(), TimeUnit.SECONDS);
+			}
+			if (configuration.getExpireAfterWrite() != null) {
+				chacheBuilder.expireAfterWrite(configuration.getExpireAfterWrite(), TimeUnit.SECONDS);
+			}
+			if (configuration.getRefreshAfterWrite() != null) {
+				chacheBuilder.refreshAfterWrite(configuration.getRefreshAfterWrite(), TimeUnit.SECONDS);
+			}
+			CaffeineCache caffeineCache = new CaffeineCache(configuration.getCacheName(), chacheBuilder.build());
+			cacheList.add(caffeineCache);
+		}
+		cacheManager.setCaches(cacheList);
+		return cacheManager;
+	}
 }

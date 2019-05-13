@@ -11,7 +11,7 @@ server:
 spring:
   jpa:
     #database-platform: org.hibernate.dialect.Oracle10gDialect
-    show-sql: false
+    show-sql: true
     open-in-view: true
   datasource: 
     url: jdbc:oracle:thin:@es1prerac03-scan:1521/PROTMPRE_SRV.sp.securitasdirect.local
@@ -20,25 +20,40 @@ spring:
     driver-class-name: oracle.jdbc.OracleDriver
     
   cache:
+      
     caffeine:
+      active: true
       configurations:
-        - cacheName: cameras
+        - cacheName: cameras/ByCountryAndInstallation
           #initialCapacity:
-          maximumSize: 100
+          maximumSize: 16000
           #maximumWeight:
           #expireAfterAccess: #SECONDS
           #expireAfterWrite: #SECONDS
           #refreshAfterWrite: #SECONDS
           #concurrencyLevel:
-        - cacheName: serials
+        - cacheName: cameras/ByCountryAndInstallationAndZone
           #initialCapacity:
-          maximumSize: 100
+          maximumSize: 16000
           #maximumWeight:
           #expireAfterAccess: #SECONDS
           #expireAfterWrite: #SECONDS
           #refreshAfterWrite: #SECONDS
           #concurrencyLevel:
-     
+        - cacheName: cameras/BySerial
+          #initialCapacity:
+          maximumSize: 16000
+          #maximumWeight:
+          #expireAfterAccess: #SECONDS
+          #expireAfterWrite: #SECONDS
+          #refreshAfterWrite: #SECONDS
+          #concurrencyLevel:
+
+    redis:
+      time-to-live: 
+        seconds: -1    
+      cache-null-values: false  
+           
   redis:
     database: 0 # Database index used by the connection factory.
     host: ${REDIS_HOST} # Redis server host 192.168.99.100
@@ -48,8 +63,8 @@ spring:
     timeout: 2000 # Connection timeout in milliseconds.
     pool:
       enabled: true
-    jedis:      pool:        max-active: 8 # Max number of connections that can be allocated by the pool at a given time. Use a negative value for no limit.
-        max-idle: 8 # Max number of "idle" connections in the pool. Use a negative value to indicate an unlimited number of idle connections.
+    jedis:      pool:        max-active: -1 # Max number of connections that can be allocated by the pool at a given time. Use a negative value for no limit.
+        max-idle: -1 # Max number of "idle" connections in the pool. Use a negative value to indicate an unlimited number of idle connections.
         max-wait: -1 # Maximum amount of time (in milliseconds) a connection allocation should block before throwing an exception when the pool is exhausted. Use a negative value to block indefinitely.
         min-idle: 0 # Target for the minimum number of idle connections to maintain in the pool. This setting only has an effect if it is positive.
     cluster:
