@@ -72,11 +72,34 @@ public class CameraServiceImpl implements CameraService {
 	@CachePut(key = "#camera.id", value = "cameras", cacheManager = "cacheManager")
 	public Camera create(Camera camera) {
 		LOGGER.debug("create:" + camera);
+		return camera;
+	}
+
+	@CachePut(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager")
+	public Camera update(Camera camera, String id) {
+		LOGGER.debug("update camera {} with id {}:", camera, id);
+		return repository.findById(id).map(newCamera -> {
+			camera.setSerial(camera.getSerial());
+			return camera;
+		}).orElseGet(() -> {
+			camera.setId(id);
+			return camera;
+		});
+	}
+
+	@CacheEvict(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager")
+	public void deleteById(String id) {
+		LOGGER.debug("deleteById:" + id);
+	}
+	
+	@CachePut(key = "#camera.id", value = "cameras/BySerial", cacheManager = "cacheManager")
+	public Camera createInRepository(Camera camera) {
+		LOGGER.debug("create:" + camera);
 		return repository.save(camera);
 	}
 
-	@CachePut(key = "#id", value = "cameras", cacheManager = "cacheManager")
-	public Camera update(Camera camera, String id) {
+	@CachePut(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager")
+	public Camera updateInRepository(Camera camera, String id) {
 		LOGGER.debug("update camera {} with id {}:", camera, id);
 		
 		return repository.findById(id).map(newCamera -> {
@@ -88,8 +111,8 @@ public class CameraServiceImpl implements CameraService {
 		});
 	}
 
-	@CacheEvict(key = "#id", value = "cameras", cacheManager = "cacheManager")
-	public void deleteById(String id) {
+	@CacheEvict(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager")
+	public void deleteByIdInRepository(String id) {
 		LOGGER.debug("deleteById:" + id);
 		repository.deleteById(id);
 	}
