@@ -20,7 +20,7 @@ spring:
     driver-class-name: oracle.jdbc.OracleDriver
     
   cache:
-      
+    two-level: true    
     caffeine:
       active: true
       configurations:
@@ -48,7 +48,14 @@ spring:
           #expireAfterWrite: #SECONDS
           #refreshAfterWrite: #SECONDS
           #concurrencyLevel:
-
+        - cacheName: voss/ByCountryAndInstallation
+          #initialCapacity:
+          maximumSize: 16000
+          #maximumWeight:
+          #expireAfterAccess: #SECONDS
+          #expireAfterWrite: #SECONDS
+          #refreshAfterWrite: #SECONDS
+          #concurrencyLevel:
     redis:
       time-to-live: 
         seconds: -1    
