@@ -20,13 +20,13 @@ spring:
     driver-class-name: oracle.jdbc.OracleDriver
     
   cache:
-    two-level: true    
+    two-layer: ${TWO_LAYER_CACHE}    
     caffeine:
       active: true
       configurations:
         - cacheName: cameras/ByCountryAndInstallation
           #initialCapacity:
-          maximumSize: 16000
+          maximumSize: 200000
           #maximumWeight:
           #expireAfterAccess: #SECONDS
           #expireAfterWrite: #SECONDS
@@ -34,7 +34,7 @@ spring:
           #concurrencyLevel:
         - cacheName: cameras/ByCountryAndInstallationAndZone
           #initialCapacity:
-          maximumSize: 16000
+          maximumSize: 200000
           #maximumWeight:
           #expireAfterAccess: #SECONDS
           #expireAfterWrite: #SECONDS
@@ -42,7 +42,15 @@ spring:
           #concurrencyLevel:
         - cacheName: cameras/BySerial
           #initialCapacity:
-          maximumSize: 16000
+          maximumSize: 200000
+          #maximumWeight:
+          #expireAfterAccess: #SECONDS
+          #expireAfterWrite: #SECONDS
+          #refreshAfterWrite: #SECONDS
+          #concurrencyLevel:
+        - cacheName: cameras/all
+          #initialCapacity:
+          maximumSize: 20000
           #maximumWeight:
           #expireAfterAccess: #SECONDS
           #expireAfterWrite: #SECONDS
@@ -50,7 +58,7 @@ spring:
           #concurrencyLevel:
         - cacheName: voss/ByCountryAndInstallation
           #initialCapacity:
-          maximumSize: 16000
+          maximumSize: 200000
           #maximumWeight:
           #expireAfterAccess: #SECONDS
           #expireAfterWrite: #SECONDS

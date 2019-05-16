@@ -8,14 +8,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import com.msl.cache.springcachemulti.cache.TwoLevelCacheManager;
+import com.msl.cache.springcachemulti.cache.TwoLayerCacheManager;
 
 @Configuration
 public class CacheManagerConfiguration {
 
 	 //Activate two level cache
-    @Value("${spring.cache.two-level}")
-	private boolean twoLevel;
+    @Value("${spring.cache.two-layer}")
+	private boolean twoLayer;
 
 	/**
 	 * The caffeine cache manager.
@@ -43,8 +43,8 @@ public class CacheManagerConfiguration {
 	@Bean
 	@Primary
 	public CacheManager cacheManager() {
-		if (twoLevel) {
-			return new TwoLevelCacheManager(caffeineCacheManager, redisCacheManager);
+		if (twoLayer) {
+			return new TwoLayerCacheManager(caffeineCacheManager, redisCacheManager);
 		} else if (caffeineCacheConfiguration.isActive()) {
 			// Es importante el orden que se añaden los cache manager al
 			// CompositeCacheManager.

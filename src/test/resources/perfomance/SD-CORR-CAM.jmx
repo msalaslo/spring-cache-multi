@@ -36,7 +36,7 @@
             </elementProp>
             <elementProp name="port" elementType="Argument">
               <stringProp name="Argument.name">port</stringProp>
-              <stringProp name="Argument.value">8084</stringProp>
+              <stringProp name="Argument.value">${__P(port,8084)}</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
               <stringProp name="Argument.desc">${__P(port,8085)}</stringProp>
             </elementProp>
@@ -654,7 +654,7 @@
             <connectTime>true</connectTime>
           </value>
         </objProp>
-        <stringProp name="filename"></stringProp>
+        <stringProp name="filename">C:\Users\msalas\Documents\workspace-sts-securitas-arq-arquetipo\spring-cache-multi\src\test\resources\perfomance\jmeter.jtl</stringProp>
       </ResultCollector>
       <hashTree/>
       <ResultCollector guiclass="RespTimeGraphVisualizer" testclass="ResultCollector" testname="Response Time Graph" enabled="true">
@@ -690,7 +690,7 @@
             <connectTime>true</connectTime>
           </value>
         </objProp>
-        <stringProp name="filename">C:\Users\msalas\Documents\workspace-sts-securitas-arq-arquetipo\spring-cache-multi\src\test\resources\perfomance\jmeter-P8.jtl</stringProp>
+        <stringProp name="filename">C:\Users\msalas\Documents\workspace-sts-securitas-arq-arquetipo\spring-cache-multi\src\test\resources\perfomance\jmeter.jtl</stringProp>
       </ResultCollector>
       <hashTree/>
       <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="Escritor de Datos Simple" enabled="false">

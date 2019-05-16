@@ -20,7 +20,7 @@
     <logger name="com.verisure" level="INFO" />
     <logger name="com.netflix" level="INFO" />
     <logger name="org.springframework" level="INFO" />
-    <logger name="org.springframework.cache" level="trace" />
+    <logger name="org.springframework.cache" level="INFO" />
     
 
     <root level="warn">
