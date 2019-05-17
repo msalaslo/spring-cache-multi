@@ -116,4 +116,10 @@ public class CameraServiceImpl implements CameraService {
 		LOGGER.debug("deleteById:" + id);
 		repository.deleteById(id);
 	}
+	
+	@Override
+	public long count() {
+		LOGGER.debug("count");
+		return repository.count();
+	}
 }

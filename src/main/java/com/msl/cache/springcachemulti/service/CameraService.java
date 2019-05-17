@@ -15,4 +15,5 @@ public interface CameraService {
 	public void deleteById(String id);
 	public PageDTO<CameraDTO> findAll(int page, int pageSize);
 	public Iterable<Camera> findVossDevices(String country, String installation);
+	public long count();
 }
