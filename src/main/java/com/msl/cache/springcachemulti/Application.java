@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @EnableCaching
 @EnableRedisRepositories
 @EnableSpringDataWebSupport
+@EnableAsync
 public class Application {
 
 	protected Application() {

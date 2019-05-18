@@ -35,7 +35,7 @@ public class CameraServiceImpl implements CameraService {
 		LOGGER.info("findAll");
 		Pageable pageable = PageRequest.of(page, pageSize);
 		Page<Camera> cameraPage = repository.findAll(pageable);
-		PageDTO<CameraDTO> camerasDtoPage = cameraConverter.mapCameraPageToDTO(null, cameraPage);
+		PageDTO<CameraDTO> camerasDtoPage = cameraConverter.mapCameraPageToDto(null, cameraPage);
 		return camerasDtoPage;
 	}
 

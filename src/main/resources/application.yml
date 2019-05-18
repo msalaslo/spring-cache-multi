@@ -92,19 +92,29 @@ spring:
       nodes: 127.0.0.1:27379 # Comma-separated list of host:port pairs.
  
 # =========================
-# HEALTH INDICATORS (previously health.*)
+# HEALTH INDICATORS
 # =========================
 management:
+  endpoints:
+    web:      exposure:        include: "*"
   health:
     defaults:
       enabled: true # Enable default health indicators
     db:
       enabled: true # Enable database health check
     diskspace:
-      enabled: false # Enable disk space health check
+      enabled: true # Enable disk space health check
       path: / # Path used to compute the available disk space
       threshold: 0 # Minimum disk space that should be available, in bytes
     redis:
       enabled: true # Enable Redis health check
     status:
-      order: DOWN, OUT_OF_SERVICE, UNKNOWN, UP # Comma-separated list of health statuses in order of severity   
+      order: DOWN, OUT_OF_SERVICE, UNKNOWN, UP # Comma-separated list of health statuses in order of severity 
+  endpoint:
+    health:
+      enabled: true
+    caches:      enabled: true
+    logfile:      enabled: true
+    metrics:      enabled: true 
+    loggers:      enabled: true
+    prometheus:      enabled: true

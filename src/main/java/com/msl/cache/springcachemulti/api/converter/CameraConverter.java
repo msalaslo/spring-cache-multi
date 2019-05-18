@@ -17,7 +17,9 @@ import com.msl.cache.springcachemulti.domain.entity.Camera;
  */
 @Mapper(componentModel = "spring")
 public interface CameraConverter {
-    List<CameraDTO> mapCameraListToDTO(List<Camera> cameras);
+	CameraDTO toCameraDto(CameraDTO camera);
+    List<CameraDTO> mapCameraListToDto(List<Camera> cameras);
+    
     //Void workaround: https://github.com/mapstruct/mapstruct/issues/661
-    PageDTO<CameraDTO> mapCameraPageToDTO(Void workaround, Page<Camera> cameras);
+    PageDTO<CameraDTO> mapCameraPageToDto(Void workaround, Page<Camera> cameras);
 }
