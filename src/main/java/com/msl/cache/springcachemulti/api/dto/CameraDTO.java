@@ -1,11 +1,6 @@
 package com.msl.cache.springcachemulti.api.dto;
 
 import java.util.Date;
-import java.util.List;
-
-import org.springframework.data.domain.Pageable;
-
-import com.msl.cache.springcachemulti.domain.entity.Camera;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -21,10 +16,12 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class CameraDTO extends BaseDTO {
+	
+	public CameraDTO(){
+	}
 
     @ApiModelProperty(notes = "serial, the identifier", required = true)
 	public String serial;
