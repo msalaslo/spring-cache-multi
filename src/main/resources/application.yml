@@ -9,6 +9,9 @@ server:
 ## then change to "update" which just updates the schema when necessary
 #spring.jpa.hibernate.ddl-auto=create
 spring:
+  boot:    admin:      context-path: /admin
+      ui:        title: SD Multi Layer Cache
+  
   jpa:
     #database-platform: org.hibernate.dialect.Oracle10gDialect
     show-sql: true
@@ -18,6 +21,8 @@ spring:
     username: RS_SCORR
     password: RS_SCORR
     driver-class-name: oracle.jdbc.OracleDriver
+    hikari:      maximum-pool-size: 100    dbcp2:      max-total: 100
+      
     
   cache:
     two-layer: ${TWO_LAYER_CACHE}    

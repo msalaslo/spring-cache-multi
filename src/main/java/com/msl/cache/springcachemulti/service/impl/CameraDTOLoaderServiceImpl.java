@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.msl.cache.springcachemulti.api.dto.CameraDTO;
 import com.msl.cache.springcachemulti.service.CameraDTOLoaderService;
-import com.msl.cache.springcachemulti.service.CameraService;
+import com.msl.cache.springcachemulti.service.CameraServiceAsync;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 class CameraDTOLoaderServiceImpl implements CameraDTOLoaderService{
 
 	@Autowired
-	CameraService cameraService;
+	CameraServiceAsync cameraService;
 
 	@Async
 	public void loadToCaches(List<CameraDTO> cameras) {
