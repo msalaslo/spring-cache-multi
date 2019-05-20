@@ -21,6 +21,7 @@ spring:
     username: RS_SCORR
     password: RS_SCORR
     driver-class-name: oracle.jdbc.OracleDriver
+    tomcat:      max-active: 100
     hikari:      maximum-pool-size: 100    dbcp2:      max-total: 100
       
     

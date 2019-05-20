@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.msl.cache.springcachemulti.api.dto.CameraDTO;
 import com.msl.cache.springcachemulti.service.CameraService;
 import com.msl.cache.springcachemulti.service.CameraServiceAsync;
 
@@ -36,6 +37,11 @@ public class CameraServiceAsyncImpl implements CameraServiceAsync {
 	@Async
 	public void findVossDevices(String country, String installation) {
 		service.findVossDevices(country, installation);
+	}
+	
+	@Async
+	public void put(CameraDTO cameraDTO) {
+		service.put(cameraDTO);
 	}
 	
 	public long count() {

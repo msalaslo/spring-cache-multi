@@ -24,9 +24,15 @@ class CameraDTOLoaderServiceImpl implements CameraDTOLoaderService{
 	public void loadToCaches(List<CameraDTO> cameras) {
 		for (Iterator<CameraDTO> iterator = cameras.iterator(); iterator.hasNext();) {
 			CameraDTO cameraDTO = (CameraDTO) iterator.next();
-			loadToCaches(cameraDTO);
+//			loadToCaches(cameraDTO);
+			putToCaches(cameraDTO);
 			LOGGER.info("loading List of cameras");
 		}
+	}
+	
+	@Async
+	public void putToCaches(CameraDTO cameraDTO) {
+		cameraService.put(cameraDTO);
 	}
 	
 	@Async

@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.msl.cache.springcachemulti.api.dto.CameraDTO;
 import com.msl.cache.springcachemulti.api.dto.PageDTO;
-import com.msl.cache.springcachemulti.common.utils.CameraHandler;
 import com.msl.cache.springcachemulti.service.CameraService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -83,10 +82,8 @@ public class CamerasController {
 
 	@PostMapping(path = "/cameras", consumes = "application/json", produces = "application/json")
 	@ResponseStatus(HttpStatus.CREATED)
-	public CameraDTO create(@RequestBody CameraDTO camera) {
-		// TODO: Revisar el seteo del Id desde un controller
-		CameraHandler.generateAndSetId(camera);
-		service.create(camera);
+	public CameraDTO put(@RequestBody CameraDTO camera) {
+		service.put(camera);
 		return camera;
 	}
 
