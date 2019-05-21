@@ -49,7 +49,7 @@ public class CamerasController {
 			@RequestParam(required = false) final String installation) {
 		if (zone != null) {
 			LOGGER.info("Finding cameras by country: {}, installation: {}, zone: {}", country, installation, zone);
-			Optional<CameraDTO> camera = service.findBy(country, installation, zone);
+			Optional<CameraDTO> camera = service.findByCountryAndInstallationAndZone(country, installation, zone);
 			if (camera.isPresent()) {
 				List<CameraDTO> cameras = new ArrayList<CameraDTO>();
 				cameras.add(camera.get());
@@ -59,7 +59,7 @@ public class CamerasController {
 			}
 		} else if (country != null && installation != null) {
 			LOGGER.info("Finding cameras by country: {}, installation: {}", country, installation);
-			return new ResponseEntity<Iterable<CameraDTO>>(service.findBy(country, installation), HttpStatus.OK);
+			return new ResponseEntity<Iterable<CameraDTO>>(service.findByCountryAndInstallation(country, installation), HttpStatus.OK);
 		} else {
 			return ResponseEntity.badRequest().build();
 		}
@@ -77,7 +77,7 @@ public class CamerasController {
 	public ResponseEntity<Iterable<CameraDTO>> getVosses(@RequestParam String country,
 			@RequestParam String installation) {
 		LOGGER.info("Finding vosses by country: {}, installation: {}", country, installation);
-		return new ResponseEntity<Iterable<CameraDTO>>(service.findVossDevices(country, installation), HttpStatus.OK);
+		return new ResponseEntity<Iterable<CameraDTO>>(service.findVossDevicesByCountryAndInstallation(country, installation), HttpStatus.OK);
 	}
 
 	@PostMapping(path = "/cameras", consumes = "application/json", produces = "application/json")

@@ -24,26 +24,23 @@ class CameraDTOLoaderServiceImpl implements CameraDTOLoaderService{
 	public void loadToCaches(List<CameraDTO> cameras) {
 		for (Iterator<CameraDTO> iterator = cameras.iterator(); iterator.hasNext();) {
 			CameraDTO cameraDTO = (CameraDTO) iterator.next();
-//			loadToCaches(cameraDTO);
-			putToCaches(cameraDTO);
-			LOGGER.info("loading List of cameras");
+			//Esto pone en cache las que camaras que van de una en una (serial y country+installation+zone)
+			cameraService.put(cameraDTO);
+			//Esto pone en cache las que camaras que van agrupadas (voss y country+installation)
+			findAndPut(cameraDTO);
 		}
 	}
 	
-	@Async
-	public void putToCaches(CameraDTO cameraDTO) {
-		cameraService.put(cameraDTO);
-	}
 	
-	@Async
-	public void loadToCaches(CameraDTO cameraDTO) {
+	public void findAndPut(CameraDTO cameraDTO) {
 		String country = cameraDTO.getCountryCode();
 		String installation = cameraDTO.getInstallationId();
 		String zone = cameraDTO.getZone();
 		String serial = cameraDTO.getSerial();
-		cameraService.findBy(country, installation);
-		cameraService.findBy(country, installation, zone);
+		cameraService.findByCountryAndInstallation(country, installation);
+		cameraService.findByCountryAndInstallationAndZone(country, installation, zone);
 		cameraService.findById(serial);
-//		cameraService.findVossDevices(country, installation);
+		//Comentado porque de momento no hay voss, evitamos hacer consultas a la BBDD que no se cachean porque siempre devuelve null
+//		cameraService.findVossDevicesByCountryAndInstallation(country, installation);
 	}
 }

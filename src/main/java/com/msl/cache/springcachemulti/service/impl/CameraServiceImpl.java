@@ -41,14 +41,14 @@ public class CameraServiceImpl implements CameraService {
 	}
 
 	@Cacheable(value = "cameras/ByCountryAndInstallationAndZone", key = "#country + #installation + #zone", cacheManager = "cacheManager", unless = "#result == null")
-	public Optional<CameraDTO> findBy(String country, String installation, String zone) {
+	public Optional<CameraDTO> findByCountryAndInstallationAndZone(String country, String installation, String zone) {
 		LOGGER.debug("findBy country {}, installation {}, zone{}:", country, installation, zone);
 		Optional<Camera> camera = repository.findByCountryCodeAndInstallationIdAndZone(country, installation, zone);
 		return cameraConverter.toOptionalCameraDto(camera);
 	}
 
 	@Cacheable(value = "cameras/ByCountryAndInstallation", key = "#country + #installation", cacheManager = "cacheManager", unless = "#result == null or #result.size()==0")
-	public Iterable<CameraDTO> findBy(String country, String installation) {
+	public Iterable<CameraDTO> findByCountryAndInstallation(String country, String installation) {
 		LOGGER.debug("findBy country {}, installation {}", country, installation);
 		Iterable<Camera> cameras = repository.findByCountryCodeAndInstallationId(country, installation);
 		return cameraConverter.toIterableCameraDto(cameras);
@@ -68,8 +68,8 @@ public class CameraServiceImpl implements CameraService {
 		return cameraConverter.toIterableCameraDto(cameras);
 	}
 
-	@Cacheable(value = "voss/ByCountryAndInstallation", key = "#camera.countryCode + #camera.installationId", cacheManager = "cacheManager", unless = "#result == null or #result.size()==0")
-	public Iterable<CameraDTO> findVossDevices(String country, String installation) {
+	@Cacheable(value = "voss/ByCountryAndInstallation", key = "#country + #installation", cacheManager = "cacheManager", unless = "#result == null or #result.size()==0")
+	public Iterable<CameraDTO> findVossDevicesByCountryAndInstallation(String country, String installation) {
 		LOGGER.debug("findVossDevices, zone starts with VS and country is {} and installation is {}", country,
 				installation);
 		Iterable<Camera> cameras = repository.findVossDevicesBy(country, installation);
@@ -78,12 +78,24 @@ public class CameraServiceImpl implements CameraService {
 
 	@Caching(put = {
 			@CachePut(value = "cameras/ByCountryAndInstallationAndZone", key = "#camera.countryCode + #camera.installationId + #camera.zone", cacheManager = "cacheManager"),
-			@CachePut(value = "cameras/ByCountryAndInstallation", key = "#camera.countryCode + #camera.installationId", cacheManager = "cacheManager"),
-			@CachePut(value = "cameras/BySerial", key = "#camera.serial", cacheManager = "cacheManager"),
-			@CachePut(value = "voss/ByCountryAndInstallation", key = "#camera.countryCode + #camera.installationId", cacheManager = "cacheManager", condition = "#camera.vossServices != null") })
+			@CachePut(value = "cameras/BySerial", key = "#camera.serial", cacheManager = "cacheManager") })
 	public CameraDTO put(CameraDTO camera) {
 		LOGGER.info("PUT::This method does not create the object in the database, only has been cached:" + camera);
 		return camera;
+	}
+	
+	@Caching(put = {
+			@CachePut(value = "cameras/ByCountryAndInstallation", key = "#camera.countryCode + #camera.installationId", cacheManager = "cacheManager") })
+	public Iterable<CameraDTO> putByCountryAndInstallation(Iterable<CameraDTO> cameras) {
+		LOGGER.info("PUT::This method does not create the object in the database, only has been cached:" + cameras);
+		return cameras;
+	}
+	
+	@Caching(put = {
+			@CachePut(value = "voss/ByCountryAndInstallation", key = "#camera.countryCode + #camera.installationId", cacheManager = "cacheManager", condition = "#camera.vossServices != null") })
+	public Iterable<CameraDTO> putVosses(Iterable<CameraDTO> cameras) {
+		LOGGER.info("PUT::This method does not create the object in the database, only has been cached:" + cameras);
+		return cameras;
 	}
 
 	@CachePut(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager")

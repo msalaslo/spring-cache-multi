@@ -20,13 +20,13 @@ public class CameraServiceAsyncImpl implements CameraServiceAsync {
 	}
 
 	@Async
-	public void findBy(String country, String installation, String zone) {
-		service.findBy(country, installation, zone);
+	public void findByCountryAndInstallationAndZone(String country, String installation, String zone) {
+		service.findByCountryAndInstallationAndZone(country, installation, zone);
 	}
 
 	@Async
-	public void findBy(String country, String installation) {
-		service.findBy(country, installation);
+	public void findByCountryAndInstallation(String country, String installation) {
+		service.findByCountryAndInstallation(country, installation);
 	}
 
 	@Async
@@ -35,8 +35,8 @@ public class CameraServiceAsyncImpl implements CameraServiceAsync {
 	}
 	
 	@Async
-	public void findVossDevices(String country, String installation) {
-		service.findVossDevices(country, installation);
+	public void findVossDevicesByCountryAndInstallation(String country, String installation) {
+		service.findVossDevicesByCountryAndInstallation(country, installation);
 	}
 	
 	@Async
