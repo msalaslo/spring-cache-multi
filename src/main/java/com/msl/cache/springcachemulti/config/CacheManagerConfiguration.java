@@ -34,6 +34,12 @@ public class CacheManagerConfiguration {
 	 */
 	@Autowired
 	private CacheManager redisCacheManager;
+	
+	/**
+	 * The redis cache manager.
+	 */
+	@Autowired
+	private CacheManager hazelCastCacheManager;
 
 	/**
 	 * Cache manager.
@@ -44,7 +50,8 @@ public class CacheManagerConfiguration {
 	@Primary
 	public CacheManager cacheManager() {
 		if (twoLayer) {
-			return new TwoLayerCacheManager(caffeineCacheManager, redisCacheManager);
+			//return new TwoLayerCacheManager(caffeineCacheManager, redisCacheManager);
+			return new TwoLayerCacheManager(hazelCastCacheManager, redisCacheManager);			
 		} else if (caffeineCacheConfiguration.isActive()) {
 			// Es importante el orden que se añaden los cache manager al
 			// CompositeCacheManager.

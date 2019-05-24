@@ -76,7 +76,7 @@ spring:
       cache-null-values: false  
            
   redis:
-    database: 2 # Database index used by the connection factory.
+    database: 1 # Database index used by the connection factory.
     host: ${REDIS_HOST} # Redis server host 192.168.99.100
     port: ${REDIS_PORT} # Redis server port 6379 
     password: ${REDIS_PASSWORD} # Login password of the redis server.
