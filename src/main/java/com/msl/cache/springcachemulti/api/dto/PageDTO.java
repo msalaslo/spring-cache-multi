@@ -1,5 +1,6 @@
 package com.msl.cache.springcachemulti.api.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -19,7 +20,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PageDTO<T> extends BaseDTO {
+public class PageDTO<T> extends BaseDTO implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty(notes = "Content of the page", required = true)
 	private List<T> content;
