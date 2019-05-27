@@ -10,7 +10,8 @@ server:
 #spring.jpa.hibernate.ddl-auto=create
 spring:
   boot:    admin:      context-path: /admin
-      ui:        title: SD Multi Layer Cache
+      client:
+        url: http://localhost:8084/correlation/admin      ui:        title: SD Multi Layer Cache
   
   jpa:
     #database-platform: org.hibernate.dialect.Oracle10gDialect
@@ -23,12 +24,34 @@ spring:
     driver-class-name: oracle.jdbc.OracleDriver
     tomcat:      max-active: 100
     hikari:      maximum-pool-size: 100    dbcp2:      max-total: 100
-      
-    
+       
   cache:
     two-layer: ${TWO_LAYER_CACHE}    
-    caffeine:
+    hazelcast: 
       active: true
+      configurations:
+        - cacheName: cameras/ByCountryAndInstallation
+          maximumSize: 200000
+          #timeToLiveSeconds: #SECONDS
+          #maxIdleSeconds: #SECONDS
+        - cacheName: cameras/ByCountryAndInstallationAndZone
+          maximumSize: 200000
+          #timeToLiveSeconds: #SECONDS
+          #maxIdleSeconds: #SECONDS
+        - cacheName: cameras/BySerial
+          maximumSize: 200000
+          #timeToLiveSeconds: #SECONDS
+          #maxIdleSeconds: #SECONDS
+        - cacheName: cameras/all
+          maximumSize: 200000
+          #timeToLiveSeconds: #SECONDS
+          #maxIdleSeconds: #SECONDS
+        - cacheName: voss/ByCountryAndInstallation
+          maximumSize: 200000
+          #timeToLiveSeconds: #SECONDS
+          #maxIdleSeconds: #SECONDS
+    caffeine:
+      active: false
       configurations:
         - cacheName: cameras/ByCountryAndInstallation
           #initialCapacity:
@@ -103,24 +126,3 @@ spring:
 management:
   endpoints:
     web:      exposure:        include: "*"
-  health:
-    defaults:
-      enabled: true # Enable default health indicators
-    db:
-      enabled: true # Enable database health check
-    diskspace:
-      enabled: true # Enable disk space health check
-      path: / # Path used to compute the available disk space
-      threshold: 0 # Minimum disk space that should be available, in bytes
-    redis:
-      enabled: true # Enable Redis health check
-    status:
-      order: DOWN, OUT_OF_SERVICE, UNKNOWN, UP # Comma-separated list of health statuses in order of severity 
-  endpoint:
-    health:
-      enabled: true
-    caches:      enabled: true
-    logfile:      enabled: true
-    metrics:      enabled: true 
-    loggers:      enabled: true
-    prometheus:      enabled: true

@@ -111,7 +111,7 @@ public class RedisConfiguration {
      *
      * @return the cache manager
      */
-    @Bean
+    @Bean(name = "redisCacheManager")
     public RedisCacheManager redisCacheManager(LettuceConnectionFactory lettuceConnectionFactory) {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .disableCachingNullValues()
