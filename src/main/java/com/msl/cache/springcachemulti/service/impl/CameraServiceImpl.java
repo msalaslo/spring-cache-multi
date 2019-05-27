@@ -73,6 +73,7 @@ public class CameraServiceImpl implements CameraService {
 		LOGGER.debug("findVossDevices, zone starts with VS and country is {} and installation is {}", country,
 				installation);
 		Iterable<Camera> cameras = repository.findVossDevicesBy(country, installation);
+//		Iterable<Camera> cameras = repository.findByCountryCodeAndInstallationIdAndZoneLike(country, installation, "VS%");
 		return cameraConverter.toIterableCameraDto(cameras);
 	}
 

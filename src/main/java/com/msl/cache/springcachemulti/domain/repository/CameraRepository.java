@@ -25,5 +25,7 @@ public interface CameraRepository extends PagingAndSortingRepository<Camera, Str
 	
 	@Query("select c from Camera c where c.countryCode = ?1 and c.installationId = ?2 and c.zone like 'VS%' ")
 	public Iterable<Camera> findVossDevicesBy(String country, String installation);
+	
+	public Iterable<Camera> findByCountryCodeAndInstallationIdAndZoneLike(String country, String installation, String zoneLikeExpresion);
 
 }
