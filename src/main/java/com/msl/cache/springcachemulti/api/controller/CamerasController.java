@@ -72,6 +72,14 @@ public class CamerasController {
 		LOGGER.info("Finding all cameras page: {} and size {}", page, size);
 		return new ResponseEntity<PageDTO<CameraDTO>>(service.findAll(page, size), HttpStatus.OK);
 	}
+	
+	@GetMapping(path = "/vosses/page", produces = "application/json")
+	public ResponseEntity<PageDTO<CameraDTO>> findVossesPaginated(@RequestParam(required = true) final Integer page,
+			@RequestParam(required = true) final Integer size, @RequestParam(required = false) final String sort) {
+
+		LOGGER.info("Finding all voss page: {} and size {}", page, size);
+		return new ResponseEntity<PageDTO<CameraDTO>>(service.findAllVoss(page, size), HttpStatus.OK);
+	}
 
 	@GetMapping(path = "/vosses", produces = "application/json")
 	public ResponseEntity<Iterable<CameraDTO>> getVosses(@RequestParam String country,

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "CAMERAPOC")
+@Table(name = "CAMERA")
 public class Camera implements Serializable{
 
 	private static final long serialVersionUID = 1L;

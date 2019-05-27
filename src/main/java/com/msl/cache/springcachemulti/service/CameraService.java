@@ -13,6 +13,7 @@ public interface CameraService {
 	public CameraDTO update(CameraDTO camera, String id);
 	public void deleteById(String id);
 	public PageDTO<CameraDTO> findAll(int page, int pageSize);
+	public PageDTO<CameraDTO> findAllVoss(int page, int pageSize);
 	public Iterable<CameraDTO> findVossDevicesByCountryAndInstallation(String country, String installation);
 	public long count();
 }

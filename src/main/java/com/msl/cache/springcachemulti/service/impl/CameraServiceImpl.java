@@ -61,19 +61,20 @@ public class CameraServiceImpl implements CameraService {
 		return cameraConverter.toOptionalCameraDto(camera);
 	}
 
-	@Cacheable(key = "#camera.id", value = "voss/all", cacheManager = "cacheManager", unless = "#result == null")
-	public Iterable<CameraDTO> findVossDevices() {
+	@Cacheable(value = "voss/all", cacheManager = "cacheManager", unless = "#result == null")
+	public PageDTO<CameraDTO> findAllVoss(int page, int pageSize) {
 		LOGGER.debug("findVossDevices, zone starts with VS");
-		Iterable<Camera> cameras = repository.findByZoneStartingWith("VS");
-		return cameraConverter.toIterableCameraDto(cameras);
+		Pageable pageable = PageRequest.of(page, pageSize);
+		Page<Camera> cameraPage = repository.findByZoneStartingWith("VS", pageable);
+		PageDTO<CameraDTO> camerasDtoPage = cameraConverter.toPageCameraDto(null, cameraPage);
+		return camerasDtoPage;
 	}
 
 	@Cacheable(value = "voss/ByCountryAndInstallation", key = "#country + #installation", cacheManager = "cacheManager", unless = "#result == null or #result.size()==0")
 	public Iterable<CameraDTO> findVossDevicesByCountryAndInstallation(String country, String installation) {
 		LOGGER.debug("findVossDevices, zone starts with VS and country is {} and installation is {}", country,
 				installation);
-		Iterable<Camera> cameras = repository.findVossDevicesBy(country, installation);
-//		Iterable<Camera> cameras = repository.findByCountryCodeAndInstallationIdAndZoneLike(country, installation, "VS%");
+		Iterable<Camera> cameras = repository.findByCountryCodeAndInstallationIdAndZoneStartingWith(country, installation, "VS");
 		return cameraConverter.toIterableCameraDto(cameras);
 	}
 
