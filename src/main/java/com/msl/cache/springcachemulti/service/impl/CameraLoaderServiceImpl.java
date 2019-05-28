@@ -22,7 +22,7 @@ class CameraLoaderServiceImpl implements CameraLoaderService {
 
 	private int pageSize = 100;
 
-	@Async
+	@Async("customAsyncExecutor")
 	public void loadRespoitoryToCache() {
 		long numCameras = cameraService.count();
 		int numPages = (new Long(numCameras).intValue() / pageSize) + 1;

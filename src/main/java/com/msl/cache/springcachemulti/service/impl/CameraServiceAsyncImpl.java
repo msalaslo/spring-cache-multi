@@ -14,32 +14,32 @@ public class CameraServiceAsyncImpl implements CameraServiceAsync {
 	@Autowired
 	CameraService service;
 
-	@Async
+	@Async("customAsyncExecutor")
 	public void findAll(int page, int pageSize) {
 		service.findAll(page, pageSize);
 	}
 
-	@Async
+	@Async("customAsyncExecutor")
 	public void findByCountryAndInstallationAndZone(String country, String installation, String zone) {
 		service.findByCountryAndInstallationAndZone(country, installation, zone);
 	}
 
-	@Async
+	@Async("customAsyncExecutor")
 	public void findByCountryAndInstallation(String country, String installation) {
 		service.findByCountryAndInstallation(country, installation);
 	}
 
-	@Async
+	@Async("customAsyncExecutor")
 	public void findById(String id) {
 		service.findById(id);
 	}
 	
-	@Async
+	@Async("customAsyncExecutor")
 	public void findVossDevicesByCountryAndInstallation(String country, String installation) {
 		service.findVossDevicesByCountryAndInstallation(country, installation);
 	}
 	
-	@Async
+	@Async("customAsyncExecutor")
 	public void put(CameraDTO cameraDTO) {
 		service.put(cameraDTO);
 	}

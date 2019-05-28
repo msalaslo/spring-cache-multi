@@ -11,16 +11,13 @@ import com.msl.cache.springcachemulti.api.dto.CameraDTO;
 import com.msl.cache.springcachemulti.service.CameraDTOLoaderService;
 import com.msl.cache.springcachemulti.service.CameraServiceAsync;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Service
 class CameraDTOLoaderServiceImpl implements CameraDTOLoaderService{
 
 	@Autowired
 	CameraServiceAsync cameraService;
 
-	@Async
+	@Async("customAsyncExecutor")
 	public void loadToCaches(List<CameraDTO> cameras) {
 		for (Iterator<CameraDTO> iterator = cameras.iterator(); iterator.hasNext();) {
 			CameraDTO cameraDTO = (CameraDTO) iterator.next();
@@ -30,7 +27,6 @@ class CameraDTOLoaderServiceImpl implements CameraDTOLoaderService{
 			findAndPut(cameraDTO);
 		}
 	}
-	
 	
 	public void findAndPut(CameraDTO cameraDTO) {
 		String country = cameraDTO.getCountryCode();

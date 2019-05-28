@@ -24,7 +24,7 @@ class CameraLoaderInnerServiceImpl implements CameraLoaderInnerService{
 	@Autowired
 	CameraDTOLoaderService cameraDTOservice;
 
-	@Async
+	@Async("customAsyncExecutor")
 	public void findAllCamerasPaginatedAndLoad(int page, int pageSize) {
 		LOGGER.info("loading page {} from camera repository", page);
 		PageDTO<CameraDTO> cameraPage = cameraService.findAll(page, pageSize);

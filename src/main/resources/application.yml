@@ -3,7 +3,7 @@
 server:
   servlet:
     context-path: /correlation
-  port: 8084
+  port: 8085
     
 ## use create when running the app for the first time
 ## then change to "update" which just updates the schema when necessary
@@ -11,7 +11,7 @@ server:
 spring:
   boot:    admin:      context-path: /admin
       client:
-        url: http://localhost:8084/correlation/admin      ui:        title: SD Multi Layer Cache
+        url: http://localhost:8085/correlation/admin      ui:        title: SD Multi Layer Cache
   
   jpa:
     #database-platform: org.hibernate.dialect.Oracle10gDialect
@@ -119,7 +119,16 @@ spring:
       enabled: false
       master: mymaster # Name of Redis server.
       nodes: 127.0.0.1:27379 # Comma-separated list of host:port pairs.
- 
+
+# =========================
+# ASYNC EXECUTOR
+# ========================= 
+async:
+  executor:
+      core-pool-size: 10
+      max-pool-size: 10
+      queue-capacity: 10
+
 # =========================
 # HEALTH INDICATORS
 # =========================
