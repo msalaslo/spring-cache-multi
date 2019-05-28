@@ -12,7 +12,7 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.lang.Nullable;
 
-public class TwoLayerCacheManager implements CacheManager, InitializingBean {
+public class TwoLayerCacheManagerImpl implements CacheManager, InitializingBean {
 
 	private final ConcurrentMap<String, Cache> cacheMap = new ConcurrentHashMap<>(16);
 	private Set<String> cacheNames = Collections.emptySet();
@@ -70,7 +70,7 @@ public class TwoLayerCacheManager implements CacheManager, InitializingBean {
 	 * @param cacheManagers
 	 *            the CacheManagers to delegate to
 	 */
-	public TwoLayerCacheManager(CacheManager currentLayer, CacheManager nextLayer) {
+	public TwoLayerCacheManagerImpl(CacheManager currentLayer, CacheManager nextLayer) {
 		// assert both contain same cache names or dynamic creation true?
 		this.currentLayer = currentLayer;
 		this.nextLayer = nextLayer;

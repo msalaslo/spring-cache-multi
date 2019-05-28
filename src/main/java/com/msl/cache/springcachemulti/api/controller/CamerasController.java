@@ -21,6 +21,8 @@ import com.msl.cache.springcachemulti.api.dto.CameraDTO;
 import com.msl.cache.springcachemulti.api.dto.PageDTO;
 import com.msl.cache.springcachemulti.service.CameraService;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -31,13 +33,12 @@ public class CamerasController {
 	CameraService service;
 
 	@GetMapping(path = "/cameras/{id}")
-	public ResponseEntity<Iterable<CameraDTO>> getById(@PathVariable(value = "id", required = true) final String id) {
+	@ApiOperation(value = "Returns a Camera by serial number (ID)")
+	public ResponseEntity<CameraDTO> getById(@ApiParam("Serial of the Camera to be obtained. Cannot be empty.") @PathVariable(value = "id", required = true) final String id) {
 		LOGGER.info("Finding cameras by id (serial): {}", id);
 		Optional<CameraDTO> camera = service.findById(id);
 		if (camera.isPresent()) {
-			List<CameraDTO> cameras = new ArrayList<CameraDTO>();
-			cameras.add(camera.get());
-			return new ResponseEntity<Iterable<CameraDTO>>(cameras, HttpStatus.OK);
+			return new ResponseEntity<CameraDTO>(camera.get(), HttpStatus.OK);
 		} else {
 			return ResponseEntity.notFound().build();
 		}
