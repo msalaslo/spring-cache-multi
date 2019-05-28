@@ -15,15 +15,15 @@ spring:
   
   jpa:
     #database-platform: org.hibernate.dialect.Oracle10gDialect
-    show-sql: true
+    show-sql: false
     open-in-view: true
   datasource: 
     url: jdbc:oracle:thin:@es1prerac03-scan:1521/PROTMPRE_SRV.sp.securitasdirect.local
     username: RS_SCORR
     password: RS_SCORR
     driver-class-name: oracle.jdbc.OracleDriver
-    tomcat:      max-active: 100
-    hikari:      maximum-pool-size: 100    dbcp2:      max-total: 100
+    tomcat:      max-active: 200
+    hikari:      maximum-pool-size: 200    dbcp2:      max-total: 200
        
   cache:
     two-layer: ${TWO_LAYER_CACHE}    

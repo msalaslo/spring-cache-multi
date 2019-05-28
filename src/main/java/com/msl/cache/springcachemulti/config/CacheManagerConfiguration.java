@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import com.msl.cache.springcachemulti.cache.TwoLayerCacheManager;
+import com.msl.cache.springcachemulti.cache.TwoLayerCacheManagerImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,10 +66,10 @@ public class CacheManagerConfiguration {
 		if (twoLayer) {
 			if (caffeineCacheConfiguration.isActive()) {
 				LOGGER.info("Two layer cache activated: CAFFEINE and REDIS");
-				return new TwoLayerCacheManager(caffeineCacheManager, redisCacheManager);
+				return new TwoLayerCacheManagerImpl(caffeineCacheManager, redisCacheManager);
 			} else if (hazelcastCacheConfiguration.isActive()) {
 				LOGGER.info("Two layer cache activated: HAZELCAST and REDIS");
-				return new TwoLayerCacheManager(hazelcastCacheManager, redisCacheManager);
+				return new TwoLayerCacheManagerImpl(hazelcastCacheManager, redisCacheManager);
 			} else {
 				String msg = "Two layer cache config activated, but no near cache ativated. Please activate one near cache (caffeine, hazelcast)";
 				LOGGER.warn(msg);

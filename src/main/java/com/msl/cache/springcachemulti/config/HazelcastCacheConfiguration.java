@@ -68,6 +68,7 @@ public class HazelcastCacheConfiguration {
 		for (HazelcastCacheConfiguration.HazelcastConfiguration configuration : configurations) {
 			MapConfig mapConfig = new MapConfig();
 			mapConfig.setName(configuration.getCacheName());
+			mapConfig.setEvictionPolicy(EvictionPolicy.LFU);
 			if (configuration.getTimeToLiveSeconds() != null) {
 				mapConfig.setTimeToLiveSeconds(configuration.getTimeToLiveSeconds());
 			}
@@ -81,38 +82,4 @@ public class HazelcastCacheConfiguration {
 		}
 		return config;
 	}
-
-	public Config hazelCastConfigOri() {
-
-		Config config = new Config();
-		config.setInstanceName("hazelcast-cache");
-
-		MapConfig camerasByCountryAndInstallation = new MapConfig();
-		camerasByCountryAndInstallation.setTimeToLiveSeconds(-1);
-		camerasByCountryAndInstallation.setEvictionPolicy(EvictionPolicy.LFU);
-		config.getMapConfigs().put("cameras/ByCountryAndInstallation", camerasByCountryAndInstallation);
-
-		MapConfig camerasByCountryAndInstallationAndZone = new MapConfig();
-		camerasByCountryAndInstallationAndZone.setTimeToLiveSeconds(-1);
-		camerasByCountryAndInstallationAndZone.setEvictionPolicy(EvictionPolicy.LFU);
-		config.getMapConfigs().put("cameras/ByCountryAndInstallationAndZone", camerasByCountryAndInstallationAndZone);
-
-		MapConfig camerasBySerial = new MapConfig();
-		camerasBySerial.setTimeToLiveSeconds(-1);
-		camerasBySerial.setEvictionPolicy(EvictionPolicy.LFU);
-		config.getMapConfigs().put("cameras/BySerial", camerasBySerial);
-
-		MapConfig camerasAll = new MapConfig();
-		camerasAll.setTimeToLiveSeconds(-1);
-		camerasAll.setEvictionPolicy(EvictionPolicy.LFU);
-		config.getMapConfigs().put("cameras/all", camerasAll);
-
-		MapConfig vossByCountryAndInstallation = new MapConfig();
-		vossByCountryAndInstallation.setTimeToLiveSeconds(-1);
-		vossByCountryAndInstallation.setEvictionPolicy(EvictionPolicy.LFU);
-		config.getMapConfigs().put("voss/ByCountryAndInstallation", vossByCountryAndInstallation);
-
-		return config;
-	}
-
 }
