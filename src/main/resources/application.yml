@@ -11,19 +11,22 @@ server:
 spring:
   boot:    admin:      context-path: /admin
       client:
-        url: http://localhost:8085/correlation/admin      ui:        title: SD Multi Layer Cache
+        url: http://localhost:${server.port}${server.servlet.context-path}/${spring.boot.admin.context-path}      ui:        title: SD Multi Layer Cache
   
   jpa:
     #database-platform: org.hibernate.dialect.Oracle10gDialect
     show-sql: false
     open-in-view: true
-  datasource: 
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource 
     url: jdbc:oracle:thin:@es1prerac03-scan:1521/PROTMPRE_SRV.sp.securitasdirect.local
     username: RS_SCORR
     password: RS_SCORR
     driver-class-name: oracle.jdbc.OracleDriver
-    tomcat:      max-active: 200
-    hikari:      maximum-pool-size: 200    dbcp2:      max-total: 200
+    hikari:      maximum-pool-size: 200
+      connection-test-query: SELECT 1 FROM DUAL
+      connection-timeout: 3000
+      leak-detection-threshold: 0
        
   cache:
     two-layer: ${TWO_LAYER_CACHE}    
@@ -93,13 +96,21 @@ spring:
           #expireAfterWrite: #SECONDS
           #refreshAfterWrite: #SECONDS
           #concurrencyLevel:
+        - cacheName: voss/all
+          #initialCapacity:
+          maximumSize: 20000
+          #maximumWeight:
+          #expireAfterAccess: #SECONDS
+          #expireAfterWrite: #SECONDS
+          #refreshAfterWrite: #SECONDS
+          #concurrencyLevel:
     redis:
       time-to-live: 
         seconds: -1    
       cache-null-values: false  
            
   redis:
-    database: 1 # Database index used by the connection factory.
+    database: ${REDIS_DATABASE} # Database index used by the connection factory.
     host: ${REDIS_HOST} # Redis server host 192.168.99.100
     port: ${REDIS_PORT} # Redis server port 6379 
     password: ${REDIS_PASSWORD} # Login password of the redis server.

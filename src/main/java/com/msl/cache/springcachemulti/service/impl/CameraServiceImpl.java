@@ -143,6 +143,18 @@ public class CameraServiceImpl implements CameraService {
 		LOGGER.debug("deleteById:" + id);
 		repository.deleteById(id);
 	}
+	
+	
+	@Caching(evict = {
+			@CacheEvict(value = "cameras/ByCountryAndInstallationAndZone", allEntries = true, cacheManager = "cacheManager"),
+			@CacheEvict(value = "cameras/ByCountryAndInstallation", allEntries = true, cacheManager = "cacheManager"),
+			@CacheEvict(value = "cameras/BySerial", allEntries = true, cacheManager = "cacheManager"),
+			@CacheEvict(value = "cameras/all", allEntries = true, cacheManager = "cacheManager"),
+			@CacheEvict(value = "voss/ByCountryAndInstallation", allEntries = true, cacheManager = "cacheManager"),
+			@CacheEvict(value = "voss/all", allEntries = true, cacheManager = "cacheManager")
+		})
+	@Override
+	public void evictAllCacheValues() {}
 
 	@Override
 	public long count() {

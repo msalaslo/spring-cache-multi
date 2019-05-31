@@ -16,22 +16,22 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @ConfigurationProperties(prefix = "async.executor")
 public class AsyncConfiguration implements AsyncConfigurer {
-	
+
 	private int corePoolSize;
 	private int maxPoolSize;
 	private int queueCapacity;
-	
-	@Bean(name = "customAsyncExecutor")
-    @Override
-    public Executor getAsyncExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(corePoolSize);
-        executor.setMaxPoolSize(maxPoolSize);
-        executor.setQueueCapacity(queueCapacity);
-        executor.setThreadNamePrefix("AsynExecutor-");
-        executor.initialize();
-        LOGGER.info("AsyncExecutor initialized corePoolSize {}, maxPoolSize {}, queueCapacity {}", corePoolSize, maxPoolSize, queueCapacity);
-        return executor;
-    }
 
+	@Bean(name = "customAsyncExecutor")
+	@Override
+	public Executor getAsyncExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(corePoolSize);
+		executor.setMaxPoolSize(maxPoolSize);
+		executor.setQueueCapacity(queueCapacity);
+		executor.setThreadNamePrefix("AsynExecutor-");
+		executor.initialize();
+		LOGGER.info("AsyncExecutor initialized corePoolSize {}, maxPoolSize {}, queueCapacity {}", corePoolSize,
+				maxPoolSize, queueCapacity);
+		return executor;
+	}
 }
