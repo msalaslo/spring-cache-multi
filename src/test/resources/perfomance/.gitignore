@@ -8,3 +8,4 @@
 /jmeter-P8.jtl
 /${__TestPlanName${port}}.csv
 /jmeter-P1.jtl
+/jmeter-INV2.jtl
