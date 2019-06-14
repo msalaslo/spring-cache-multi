@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.msl.cache.springcachemulti.api.dto.CameraDTO;
 import com.msl.cache.springcachemulti.api.dto.PageDTO;
 import com.msl.cache.springcachemulti.service.CameraService;
+import com.msl.cache.springcachemulti.service.CameraServicePubSub;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -33,6 +34,9 @@ public class CamerasController {
 
 	@Autowired
 	CameraService service;
+	
+	@Autowired
+	CameraServicePubSub servicePubSub;
 
 	@GetMapping(path = "/cameras/{id}")
 	@ApiOperation(value = "Returns a Camera by serial number (ID)")
@@ -108,7 +112,7 @@ public class CamerasController {
 	@DeleteMapping(path = "/cameras/{id}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
 	void delete(@PathVariable String id) {
-		service.deleteById(id);
+		servicePubSub.deleteById(id);
 	}
 	
 	@DeleteMapping(path = "/cameras", produces = "application/json")
