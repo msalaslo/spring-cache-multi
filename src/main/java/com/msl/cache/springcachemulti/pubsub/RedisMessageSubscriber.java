@@ -29,9 +29,15 @@ public class RedisMessageSubscriber implements MessageListener {
         String stringBodyMessage = new String(message.getBody());
         LOGGER.info("Message received: " + stringBodyMessage);
         List<String> messageCommands = getMessageCommands(stringBodyMessage);
+        String action = messageCommands.get(0);
         String id = messageCommands.get(1);
-        LOGGER.info("Deleting camera with ID: " + id);
-        cameraService.deleteById(id);
+        if(action.equalsIgnoreCase("DELETE")) {        	
+        	LOGGER.info("Deleting camera with ID: " + id);
+        	cameraService.deleteById(id);
+        }else if (action.equalsIgnoreCase("UPDATE")) {
+        	LOGGER.info("Updating camera with ID: " + id);
+        	cameraService.deleteById(id);
+        }
     }
     
     public List<String> getMessageCommands(String str) {
