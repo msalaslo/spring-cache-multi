@@ -36,23 +36,10 @@ public class CacheManagerConfiguration {
 	private CacheManager redisCacheManager;
 
 	/**
-	 * The redis cache manager.
-	 */
-	@Autowired
-	@Qualifier("hazelcastCacheManager")
-	private CacheManager hazelcastCacheManager;
-
-	/**
 	 * Caffeine cache configuration
 	 */
 	@Autowired
 	private CaffeineCacheConfiguration caffeineCacheConfiguration;
-
-	/**
-	 * Hazelcast cache configuration
-	 */
-	@Autowired
-	private HazelcastCacheConfiguration hazelcastCacheConfiguration;
 
 	/**
 	 * Cache manager.
@@ -67,16 +54,13 @@ public class CacheManagerConfiguration {
 			if (caffeineCacheConfiguration.isActive()) {
 				LOGGER.info("Two layer cache activated: CAFFEINE and REDIS");
 				return new TwoLayerCacheManagerImpl(caffeineCacheManager, redisCacheManager);
-			} else if (hazelcastCacheConfiguration.isActive()) {
-				LOGGER.info("Two layer cache activated: HAZELCAST and REDIS");
-				return new TwoLayerCacheManagerImpl(hazelcastCacheManager, redisCacheManager);
 			} else {
-				String msg = "Two layer cache config activated, but no near cache ativated. Please activate one near cache (caffeine, hazelcast)";
+				String msg = "Two layer cache config activated, but no near cache ativated. Please activate one near cache (caffeine)";
 				LOGGER.warn(msg);
 				throw new RuntimeException(msg);
 			}
 		} else {
-			LOGGER.info("Two layer cache deactivated using only REDIS");
+			LOGGER.info("Two layer cache deactivated, using only REDIS");
 			return new CompositeCacheManager(redisCacheManager);
 		}
 	}

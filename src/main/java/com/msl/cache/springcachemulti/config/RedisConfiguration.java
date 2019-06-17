@@ -35,6 +35,7 @@ import lombok.Data;
 @Data
 @Configuration
 //TODO sustituir los  @Value por @ConfigurationProperties
+//TODO usar solo un conector: JEDIS o LETTUCE
 public class RedisConfiguration {
 
     //  Database index used by the connection factory.

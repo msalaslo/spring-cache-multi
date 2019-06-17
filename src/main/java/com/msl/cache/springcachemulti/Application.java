@@ -20,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 @EnableCaching
 @EnableRedisRepositories
 @EnableAsync
-@Configuration
 public class Application {
 
 	protected Application() {

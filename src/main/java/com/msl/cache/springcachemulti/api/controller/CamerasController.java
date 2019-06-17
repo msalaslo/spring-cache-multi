@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.msl.cache.springcachemulti.api.dto.CameraDTO;
 import com.msl.cache.springcachemulti.api.dto.PageDTO;
 import com.msl.cache.springcachemulti.service.CameraService;
-import com.msl.cache.springcachemulti.service.CameraServiceAsync;
 import com.msl.cache.springcachemulti.service.CameraServicePubSub;
 
 import io.swagger.annotations.ApiOperation;
@@ -36,9 +35,6 @@ public class CamerasController {
 
 	@Autowired
 	CameraService service;
-	
-	@Autowired
-	CameraServiceAsync serviceAsync;
 	
 	@Autowired
 	CameraServicePubSub servicePubSub;
@@ -56,6 +52,7 @@ public class CamerasController {
 	}
 
 	@GetMapping(path = "/cameras", produces = "application/json")
+	@ApiOperation(value = "Returns a Cameras by country, zone or installation")
 	public ResponseEntity<Iterable<CameraDTO>> get(@RequestParam(required = false) final String country,
 			@RequestParam(required = false) final String zone,
 			@RequestParam(required = false) final String installation) {
@@ -78,6 +75,7 @@ public class CamerasController {
 	}
 	
 	@GetMapping(path = "/cameras/page/nocache", produces = "application/json")
+	@ApiOperation(value = "Returns paged Cameras without using cache")
 	public ResponseEntity<PageDTO<CameraDTO>> findAllNoCache(@RequestParam(required = true) final Integer page,
 			@RequestParam(required = true) final Integer size, @RequestParam(required = false) final String sort) {
 		LOGGER.info("Finding all cameras page: {} and size {}", page, size);
@@ -87,6 +85,7 @@ public class CamerasController {
 	
 
 	@GetMapping(path = "/cameras/page", produces = "application/json")
+	@ApiOperation(value = "Returns paged Cameras caching the camera keys (serial) and then retrieving the content fron the individual cache")
 	public ResponseEntity<List<CameraDTO>> findAllCachedKeys(@RequestParam(required = true) final Integer page,
 			@RequestParam(required = true) final Integer size, @RequestParam(required = false) final String sort) {
 		LOGGER.info("Finding all cameras page: {} and size {}", page, size);
@@ -96,6 +95,7 @@ public class CamerasController {
 	}
 
 	@GetMapping(path = "/cameras/page/allcontent", produces = "application/json")
+	@ApiOperation(value = "Returns paged Cameras caching all the content of the camera. Be careful with updates.")
 	public ResponseEntity<PageDTO<CameraDTO>> findAllCachedContent(@RequestParam(required = true) final Integer page,
 			@RequestParam(required = true) final Integer size, @RequestParam(required = false) final String sort) {
 		LOGGER.info("Finding all cameras page: {} and size {}", page, size);
@@ -104,27 +104,30 @@ public class CamerasController {
 	
 	@PostMapping(path = "/cameras", consumes = "application/json", produces = "application/json")
 	@ResponseStatus(HttpStatus.CREATED)
+	@ApiOperation(value = "Inserts a new camera.")
 	public CameraDTO put(@RequestBody CameraDTO camera) {
-		service.put(camera);
-		return camera;
+		LOGGER.info("Inserting camera:" + camera);
+		return service.put(camera);
 	}
 
 	@PutMapping(path = "/cameras/{id}", consumes = "application/json", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
 	public CameraDTO update(@RequestBody CameraDTO newCamera, @PathVariable String id) {
-		LOGGER.info("Finding cameras by id..." + id);
+		LOGGER.info("Updating camera by id:" + id);
 		return service.update(newCamera, id);
 	}
 
 	@DeleteMapping(path = "/cameras/{id}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
-	void delete(@PathVariable String id) {
+	public void delete(@PathVariable String id) {
+		LOGGER.info("Deleting camera by id {} and Publishing change.", id);
 		servicePubSub.deleteById(id);
 	}
 	
 	@DeleteMapping(path = "/cameras/", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
-	void delete() {
+	public void delete() {
+		LOGGER.info("Deleting all cache values.");
 		service.evictAllCacheValues();
 	}
 }
