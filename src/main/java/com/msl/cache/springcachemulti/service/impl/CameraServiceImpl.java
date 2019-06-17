@@ -1,5 +1,6 @@
 package com.msl.cache.springcachemulti.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,23 @@ public class CameraServiceImpl implements CameraService {
 	@Cacheable(value = "cameras/all", cacheManager = "cacheManager", unless = "#result == null")
 	public PageDTO<CameraDTO> findAll(int page, int pageSize) {
 		LOGGER.info("findAll");
+		return findAllNoCache(page, pageSize);
+	}
+	
+	public PageDTO<CameraDTO> findAllNoCache(int page, int pageSize) {
+		LOGGER.info("findAllNocache");
 		Pageable pageable = PageRequest.of(page, pageSize);
 		Page<Camera> cameraPage = repository.findAll(pageable);
 		PageDTO<CameraDTO> camerasDtoPage = cameraConverter.toPageCameraDto(null, cameraPage);
 		return camerasDtoPage;
+	}
+	
+	@Cacheable(value = "cameras/allKeys", cacheManager = "cacheManager", unless = "#result == null")
+	public List<String> findAllKeys(int page, int pageSize) {
+		LOGGER.info("findAllKeys");
+		Pageable pageable = PageRequest.of(page, pageSize);
+		List<String> cameraKeysPage = repository.findAllKeysWithPagination(pageable);
+		return cameraKeysPage;
 	}
 
 	@Cacheable(value = "cameras/ByCountryAndInstallationAndZone", key = "#country + #installation + #zone", cacheManager = "cacheManager", unless = "#result == null")
@@ -48,10 +62,10 @@ public class CameraServiceImpl implements CameraService {
 	}
 
 	@Cacheable(value = "cameras/ByCountryAndInstallation", key = "#country + #installation", cacheManager = "cacheManager", unless = "#result == null or #result.size()==0")
-	public Iterable<CameraDTO> findByCountryAndInstallation(String country, String installation) {
+	public List<CameraDTO> findByCountryAndInstallation(String country, String installation) {
 		LOGGER.debug("findBy country {}, installation {}", country, installation);
-		Iterable<Camera> cameras = repository.findByCountryCodeAndInstallationId(country, installation);
-		return cameraConverter.toIterableCameraDto(cameras);
+		List<Camera> cameras = repository.findByCountryCodeAndInstallationId(country, installation);
+		return cameraConverter.toListCameraDto(cameras);
 	}
 
 	@Cacheable(value = "cameras/BySerial", key = "#id", cacheManager = "cacheManager", unless = "#result == null")
@@ -71,11 +85,11 @@ public class CameraServiceImpl implements CameraService {
 	}
 
 	@Cacheable(value = "voss/ByCountryAndInstallation", key = "#country + #installation", cacheManager = "cacheManager", unless = "#result == null or #result.size()==0")
-	public Iterable<CameraDTO> findVossDevicesByCountryAndInstallation(String country, String installation) {
+	public List<CameraDTO> findVossDevicesByCountryAndInstallation(String country, String installation) {
 		LOGGER.debug("findVossDevices, zone starts with VS and country is {} and installation is {}", country,
 				installation);
-		Iterable<Camera> cameras = repository.findByCountryCodeAndInstallationIdAndZoneStartingWith(country, installation, "VS");
-		return cameraConverter.toIterableCameraDto(cameras);
+		List<Camera> cameras = repository.findByCountryCodeAndInstallationIdAndZoneStartingWith(country, installation, "VS");
+		return cameraConverter.toListCameraDto(cameras);
 	}
 
 	@Caching(put = {

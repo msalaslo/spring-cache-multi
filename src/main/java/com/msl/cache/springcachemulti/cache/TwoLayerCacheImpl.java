@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
  * The first cache can be a local memory cache (Caffeine, Embedded Hazelcast, etc.) to avoid network latency and serialization/de-serialization overhead
  * The second cache can be a remote cache (Redis, Hazelcast server, etc. ) to cache big amount of data, synchronize data, persist information, etc.
  * 
- * @author Miguel Salas
+ * @author FaaS
  */
 @Slf4j
 public class TwoLayerCacheImpl implements Cache {
