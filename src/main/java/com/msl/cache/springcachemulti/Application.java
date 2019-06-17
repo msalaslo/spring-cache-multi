@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class Application {
 
 	protected Application() {
-		LOGGER.info("Starting REST microservice");
+		LOGGER.info("Starting REST microservice that supports Caffeine, Hazelcast and Redis");
 	}
 
 	public static void main(String[] args) {
