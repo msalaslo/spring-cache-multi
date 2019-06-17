@@ -164,6 +164,7 @@ public class CameraServiceImpl implements CameraService {
 			@CacheEvict(value = "cameras/ByCountryAndInstallation", allEntries = true, cacheManager = "cacheManager"),
 			@CacheEvict(value = "cameras/BySerial", allEntries = true, cacheManager = "cacheManager"),
 			@CacheEvict(value = "cameras/all", allEntries = true, cacheManager = "cacheManager"),
+			@CacheEvict(value = "cameras/allKeys", allEntries = true, cacheManager = "cacheManager"),
 			@CacheEvict(value = "voss/ByCountryAndInstallation", allEntries = true, cacheManager = "cacheManager"),
 			@CacheEvict(value = "voss/all", allEntries = true, cacheManager = "cacheManager")
 		})
