@@ -8,12 +8,12 @@ import org.springframework.cache.support.NoOpCache;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Custom Cache Implementation that wraps two caches allowing save and retrive data from both caches.
+ * Custom Cache Implementation that wraps two caches allowing save and retrieve data from both caches.
  * For get, put and eviction uses both caches
  * The first cache can be a local memory cache (Caffeine, Embedded Hazelcast, etc.) to avoid network latency and serialization/de-serialization overhead
  * The second cache can be a remote cache (Redis, Hazelcast server, etc. ) to cache big amount of data, synchronize data, persist information, etc.
  * 
- * @author Miguel Salas
+ * @author FaaS
  */
 @Slf4j
 public class TwoLayerCacheImpl implements Cache {
@@ -86,7 +86,6 @@ public class TwoLayerCacheImpl implements Cache {
 
     @Override
     public ValueWrapper putIfAbsent(Object o, Object o1) {
-        //synchronize?
         ValueWrapper value = get(o);
         if (value == null) {
             put(o, o1);

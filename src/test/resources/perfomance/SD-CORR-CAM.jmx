@@ -48,7 +48,7 @@
             </elementProp>
             <elementProp name="context" elementType="Argument">
               <stringProp name="Argument.name">context</stringProp>
-              <stringProp name="Argument.value">${__P(context,correlation)}</stringProp>
+              <stringProp name="Argument.value">${__P(context,correlation/v1.0)}</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
             </elementProp>
             <elementProp name="protocol" elementType="Argument">
@@ -103,10 +103,10 @@
           <stringProp name="TestPlan.comments">dateFrom dateTo availability search</stringProp>
           <stringProp name="delimiter">;</stringProp>
           <stringProp name="fileEncoding">UTF-8</stringProp>
-          <stringProp name="filename">SD-CORR-CAM.csv</stringProp>
+          <stringProp name="filename">SD-POC-CORR-CAM.csv</stringProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">false</boolProp>
-          <stringProp name="shareMode">shareMode.all</stringProp>
+          <stringProp name="shareMode">shareMode.group</stringProp>
           <boolProp name="stopThread">true</boolProp>
           <stringProp name="variableNames">id,country,installation,zone,serial,cont</stringProp>
           <boolProp name="ignoreFirstLine">true</boolProp>
@@ -318,7 +318,7 @@
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
           </HTTPSamplerProxy>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET VOSS By CountryInstallation /vosses" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET VOSS By CountryInstallation /vosses" enabled="false">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
               <collectionProp name="Arguments.arguments"/>
             </elementProp>
@@ -582,7 +582,7 @@
             <connectTime>true</connectTime>
           </value>
         </objProp>
-        <stringProp name="filename"></stringProp>
+        <stringProp name="filename">C:\Users\msalas\Documents\workspace-sts-securitas-arq-arquetipo\spring-cache-multi\src\test\resources\perfomance\jmeter.jtl</stringProp>
       </ResultCollector>
       <hashTree/>
       <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
@@ -691,7 +691,7 @@
           </value>
         </objProp>
         <stringProp name="filename">C:\Users\msalas\Documents\workspace-sts-securitas-arq-arquetipo\spring-cache-multi\src\test\resources\perfomance\jmeter.jtl</stringProp>
-        <stringProp name="RespTimeGraph.interval">1000</stringProp>
+        <stringProp name="RespTimeGraph.interval">10</stringProp>
       </ResultCollector>
       <hashTree/>
       <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="Escritor de Datos Simple" enabled="false">

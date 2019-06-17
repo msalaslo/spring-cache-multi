@@ -1,6 +1,7 @@
 package com.msl.cache.springcachemulti.api.converter;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.mapstruct.Mapper;
 import org.springframework.data.domain.Page;
@@ -16,10 +17,22 @@ import com.msl.cache.springcachemulti.domain.entity.Camera;
  * @author FaaS [faas@securitasdirect.es]
  */
 @Mapper(componentModel = "spring")
-public interface CameraConverter {
-	CameraDTO toCameraDto(CameraDTO camera);
-    List<CameraDTO> mapCameraListToDto(List<Camera> cameras);
-    
+public abstract class CameraConverter {
+	public abstract CameraDTO toCameraDto(Camera camera);
+	
+	//Implementamos este mapeo ya que de momento mapstruct no soporta Optional (busca un contructor sin parametros de Optional)
+	public Optional<CameraDTO> toOptionalCameraDto(Optional<Camera> camera){
+		if(camera.isPresent()) {
+			return Optional.of(toCameraDto(camera.get()));
+		}else {
+			return Optional.empty();
+		}
+	}
+	
+	public abstract List<CameraDTO> toListCameraDto(List<Camera> cameras);
+	
     //Void workaround: https://github.com/mapstruct/mapstruct/issues/661
-    PageDTO<CameraDTO> mapCameraPageToDto(Void workaround, Page<Camera> cameras);
+	public abstract PageDTO<CameraDTO> toPageCameraDto(Void workaround, Page<Camera> cameras);
+    
+	public abstract Camera toCameraEntity(CameraDTO camera);
 }

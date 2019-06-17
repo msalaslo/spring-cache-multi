@@ -1,11 +1,13 @@
 package com.msl.cache.springcachemulti.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,58 +28,95 @@ public class CameraServiceImpl implements CameraService {
 
 	@Autowired
 	CameraRepository repository;
-	
+
 	@Autowired
 	CameraConverter cameraConverter;
-
+	
 	@Cacheable(value = "cameras/all", cacheManager = "cacheManager", unless = "#result == null")
 	public PageDTO<CameraDTO> findAll(int page, int pageSize) {
 		LOGGER.info("findAll");
+		return findAllNoCache(page, pageSize);
+	}
+	
+	public PageDTO<CameraDTO> findAllNoCache(int page, int pageSize) {
+		LOGGER.info("findAllNocache");
 		Pageable pageable = PageRequest.of(page, pageSize);
 		Page<Camera> cameraPage = repository.findAll(pageable);
-		PageDTO<CameraDTO> camerasDtoPage = cameraConverter.mapCameraPageToDto(null, cameraPage);
+		PageDTO<CameraDTO> camerasDtoPage = cameraConverter.toPageCameraDto(null, cameraPage);
+		return camerasDtoPage;
+	}
+	
+	@Cacheable(value = "cameras/allKeys", cacheManager = "cacheManager", unless = "#result == null")
+	public List<String> findAllKeys(int page, int pageSize) {
+		LOGGER.info("findAllKeys");
+		Pageable pageable = PageRequest.of(page, pageSize);
+		List<String> cameraKeysPage = repository.findAllKeysWithPagination(pageable);
+		return cameraKeysPage;
+	}
+
+	@Cacheable(value = "cameras/ByCountryAndInstallationAndZone", key = "#country + #installation + #zone", cacheManager = "cacheManager", unless = "#result == null")
+	public Optional<CameraDTO> findByCountryAndInstallationAndZone(String country, String installation, String zone) {
+		LOGGER.debug("findBy country {}, installation {}, zone{}:", country, installation, zone);
+		Optional<Camera> camera = repository.findByCountryCodeAndInstallationIdAndZone(country, installation, zone);
+		return cameraConverter.toOptionalCameraDto(camera);
+	}
+
+	@Cacheable(value = "cameras/ByCountryAndInstallation", key = "#country + #installation", cacheManager = "cacheManager", unless = "#result == null or #result.size()==0")
+	public List<CameraDTO> findByCountryAndInstallation(String country, String installation) {
+		LOGGER.debug("findBy country {}, installation {}", country, installation);
+		List<Camera> cameras = repository.findByCountryCodeAndInstallationId(country, installation);
+		return cameraConverter.toListCameraDto(cameras);
+	}
+
+	@Cacheable(value = "cameras/BySerial", key = "#id", cacheManager = "cacheManager", unless = "#result == null")
+	public Optional<CameraDTO> findById(String id) {
+		LOGGER.debug("findById:" + id);
+		Optional<Camera> camera = repository.findById(id);
+		return cameraConverter.toOptionalCameraDto(camera);
+	}
+
+	@Cacheable(value = "voss/all", cacheManager = "cacheManager", unless = "#result == null")
+	public PageDTO<CameraDTO> findAllVoss(int page, int pageSize) {
+		LOGGER.debug("findVossDevices, zone starts with VS");
+		Pageable pageable = PageRequest.of(page, pageSize);
+		Page<Camera> cameraPage = repository.findByZoneStartingWith("VS", pageable);
+		PageDTO<CameraDTO> camerasDtoPage = cameraConverter.toPageCameraDto(null, cameraPage);
 		return camerasDtoPage;
 	}
 
-	@Cacheable(value = "cameras/ByCountryAndInstallationAndZone", cacheManager = "cacheManager", unless = "#result == null")
-	public Optional<Camera> findBy(String country, String installation, String zone) {
-		LOGGER.debug("findBy country {}, installation {}, zone{}:", country, installation, zone);
-		return repository.findByCountryCodeAndInstallationIdAndZone(country, installation, zone);
-	}
-	
-	@Cacheable(value = "cameras/ByCountryAndInstallation", cacheManager = "cacheManager", unless = "#result == null or #result.size()==0")
-	public Iterable<Camera> findBy(String country, String installation) {
-		LOGGER.debug("findBy country {}, installation {}", country, installation);
-		return repository.findByCountryCodeAndInstallationId(country, installation);
+	@Cacheable(value = "voss/ByCountryAndInstallation", key = "#country + #installation", cacheManager = "cacheManager", unless = "#result == null or #result.size()==0")
+	public List<CameraDTO> findVossDevicesByCountryAndInstallation(String country, String installation) {
+		LOGGER.debug("findVossDevices, zone starts with VS and country is {} and installation is {}", country,
+				installation);
+		List<Camera> cameras = repository.findByCountryCodeAndInstallationIdAndZoneStartingWith(country, installation, "VS");
+		return cameraConverter.toListCameraDto(cameras);
 	}
 
-	@Cacheable(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager", unless = "#result == null")
-	public Optional<Camera>  findById(String id) {
-		LOGGER.debug("findById:" + id);
-		return repository.findById(id);
-	}
-
-	@Cacheable(key = "#camera.id", value = "voss/all", cacheManager = "cacheManager", unless = "#result == null")
-	public Iterable<Camera>  findVossDevices() {
-		LOGGER.debug("findVossDevices, zone starts with VS");
-		return repository.findByZoneStartingWith("VS");
-	}
-	
-	@Cacheable(value = "voss/ByCountryAndInstallation", cacheManager = "cacheManager", unless = "#result == null or #result.size()==0")
-	public Iterable<Camera>  findVossDevices(String country, String installation) {
-		LOGGER.debug("findVossDevices, zone starts with VS and country is {} and installation is {}", country, installation);
-		return repository.findVossDevicesBy(country, installation);
-	}
-	
-	@CachePut(key = "#camera.id", value = "cameras", cacheManager = "cacheManager")
-	public Camera create(Camera camera) {
-		LOGGER.debug("create:" + camera);
+	@Caching(put = {
+			@CachePut(value = "cameras/ByCountryAndInstallationAndZone", key = "#camera.countryCode + #camera.installationId + #camera.zone", cacheManager = "cacheManager"),
+			@CachePut(value = "cameras/BySerial", key = "#camera.serial", cacheManager = "cacheManager") })
+	public CameraDTO put(CameraDTO camera) {
+		LOGGER.info("PUT::This method does not create the object in the database, only has been cached:" + camera);
 		return camera;
+	}
+	
+	@Caching(put = {
+			@CachePut(value = "cameras/ByCountryAndInstallation", key = "#camera.countryCode + #camera.installationId", cacheManager = "cacheManager") })
+	public Iterable<CameraDTO> putByCountryAndInstallation(Iterable<CameraDTO> cameras) {
+		LOGGER.info("PUT::This method does not create the object in the database, only has been cached:" + cameras);
+		return cameras;
+	}
+	
+	@Caching(put = {
+			@CachePut(value = "voss/ByCountryAndInstallation", key = "#camera.countryCode + #camera.installationId", cacheManager = "cacheManager", condition = "#camera.vossServices != null") })
+	public Iterable<CameraDTO> putVosses(Iterable<CameraDTO> cameras) {
+		LOGGER.info("PUT::This method does not create the object in the database, only has been cached:" + cameras);
+		return cameras;
 	}
 
 	@CachePut(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager")
-	public Camera update(Camera camera, String id) {
-		LOGGER.debug("update camera {} with id {}:", camera, id);
+	public CameraDTO update(CameraDTO camera, String id) {
+		LOGGER.debug("This method does not integrate with the database, update camera {} with id {}:", camera, id);
 		return repository.findById(id).map(newCamera -> {
 			camera.setSerial(camera.getSerial());
 			return camera;
@@ -89,9 +128,9 @@ public class CameraServiceImpl implements CameraService {
 
 	@CacheEvict(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager")
 	public void deleteById(String id) {
-		LOGGER.debug("deleteById:" + id);
+		LOGGER.debug("This method does not integrate with the database, deleteById:" + id);
 	}
-	
+
 	@CachePut(key = "#camera.id", value = "cameras/BySerial", cacheManager = "cacheManager")
 	public Camera createInRepository(Camera camera) {
 		LOGGER.debug("create:" + camera);
@@ -99,15 +138,17 @@ public class CameraServiceImpl implements CameraService {
 	}
 
 	@CachePut(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager")
-	public Camera updateInRepository(Camera camera, String id) {
+	public CameraDTO updateInRepository(CameraDTO camera, String id) {
 		LOGGER.debug("update camera {} with id {}:", camera, id);
-		
+		Camera cameraEntity = cameraConverter.toCameraEntity(camera);
 		return repository.findById(id).map(newCamera -> {
 			camera.setSerial(camera.getSerial());
-			return repository.save(camera);
+			Camera newCameraEntity = repository.save(cameraEntity);
+			return cameraConverter.toCameraDto(newCameraEntity);
 		}).orElseGet(() -> {
 			camera.setId(id);
-			return repository.save(camera);
+			Camera newCameraEntity = repository.save(cameraEntity);
+			return cameraConverter.toCameraDto(newCameraEntity);
 		});
 	}
 
@@ -117,6 +158,18 @@ public class CameraServiceImpl implements CameraService {
 		repository.deleteById(id);
 	}
 	
+	
+	@Caching(evict = {
+			@CacheEvict(value = "cameras/ByCountryAndInstallationAndZone", allEntries = true, cacheManager = "cacheManager"),
+			@CacheEvict(value = "cameras/ByCountryAndInstallation", allEntries = true, cacheManager = "cacheManager"),
+			@CacheEvict(value = "cameras/BySerial", allEntries = true, cacheManager = "cacheManager"),
+			@CacheEvict(value = "cameras/all", allEntries = true, cacheManager = "cacheManager"),
+			@CacheEvict(value = "voss/ByCountryAndInstallation", allEntries = true, cacheManager = "cacheManager"),
+			@CacheEvict(value = "voss/all", allEntries = true, cacheManager = "cacheManager")
+		})
+	@Override
+	public void evictAllCacheValues() {}
+
 	@Override
 	public long count() {
 		LOGGER.debug("count");
