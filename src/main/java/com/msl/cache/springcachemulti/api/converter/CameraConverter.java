@@ -1,5 +1,6 @@
 package com.msl.cache.springcachemulti.api.converter;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.mapstruct.Mapper;
@@ -28,7 +29,7 @@ public abstract class CameraConverter {
 		}
 	}
 	
-	public abstract Iterable<CameraDTO> toIterableCameraDto(Iterable<Camera> cameras);
+	public abstract List<CameraDTO> toListCameraDto(List<Camera> cameras);
 	
     //Void workaround: https://github.com/mapstruct/mapstruct/issues/661
 	public abstract PageDTO<CameraDTO> toPageCameraDto(Void workaround, Page<Camera> cameras);
