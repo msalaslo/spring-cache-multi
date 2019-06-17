@@ -3,6 +3,7 @@ package com.msl.cache.springcachemulti.api.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.msl.cache.springcachemulti.api.dto.CameraDTO;
 import com.msl.cache.springcachemulti.api.dto.PageDTO;
 import com.msl.cache.springcachemulti.service.CameraService;
+import com.msl.cache.springcachemulti.service.CameraServiceAsync;
 import com.msl.cache.springcachemulti.service.CameraServicePubSub;
 
 import io.swagger.annotations.ApiOperation;
@@ -34,6 +36,9 @@ public class CamerasController {
 
 	@Autowired
 	CameraService service;
+	
+	@Autowired
+	CameraServiceAsync serviceAsync;
 	
 	@Autowired
 	CameraServicePubSub servicePubSub;
@@ -71,30 +76,32 @@ public class CamerasController {
 			return ResponseEntity.badRequest().build();
 		}
 	}
+	
+	@GetMapping(path = "/cameras/page/nocache", produces = "application/json")
+	public ResponseEntity<PageDTO<CameraDTO>> findAllNoCache(@RequestParam(required = true) final Integer page,
+			@RequestParam(required = true) final Integer size, @RequestParam(required = false) final String sort) {
+		LOGGER.info("Finding all cameras page: {} and size {}", page, size);
+		PageDTO<CameraDTO> cameras = service.findAllNoCache(page, size);
+		return new ResponseEntity<PageDTO<CameraDTO>>(cameras, HttpStatus.OK);
+	}
+	
 
 	@GetMapping(path = "/cameras/page", produces = "application/json")
-	public ResponseEntity<PageDTO<CameraDTO>> findPaginated(@RequestParam(required = true) final Integer page,
+	public ResponseEntity<List<CameraDTO>> findAllCachedKeys(@RequestParam(required = true) final Integer page,
 			@RequestParam(required = true) final Integer size, @RequestParam(required = false) final String sort) {
+		LOGGER.info("Finding all cameras page: {} and size {}", page, size);
+		List<String> keys = service.findAllKeys(page, size);
+		List<CameraDTO> cameras = keys.stream().map(service::findById).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+		return new ResponseEntity<List<CameraDTO>>(cameras, HttpStatus.OK);
+	}
 
+	@GetMapping(path = "/cameras/page/allcontent", produces = "application/json")
+	public ResponseEntity<PageDTO<CameraDTO>> findAllCachedContent(@RequestParam(required = true) final Integer page,
+			@RequestParam(required = true) final Integer size, @RequestParam(required = false) final String sort) {
 		LOGGER.info("Finding all cameras page: {} and size {}", page, size);
 		return new ResponseEntity<PageDTO<CameraDTO>>(service.findAll(page, size), HttpStatus.OK);
 	}
 	
-	@GetMapping(path = "/vosses/page", produces = "application/json")
-	public ResponseEntity<PageDTO<CameraDTO>> findVossesPaginated(@RequestParam(required = true) final Integer page,
-			@RequestParam(required = true) final Integer size, @RequestParam(required = false) final String sort) {
-
-		LOGGER.info("Finding all voss page: {} and size {}", page, size);
-		return new ResponseEntity<PageDTO<CameraDTO>>(service.findAllVoss(page, size), HttpStatus.OK);
-	}
-
-	@GetMapping(path = "/vosses", produces = "application/json")
-	public ResponseEntity<Iterable<CameraDTO>> getVosses(@RequestParam String country,
-			@RequestParam String installation) {
-		LOGGER.info("Finding vosses by country: {}, installation: {}", country, installation);
-		return new ResponseEntity<Iterable<CameraDTO>>(service.findVossDevicesByCountryAndInstallation(country, installation), HttpStatus.OK);
-	}
-
 	@PostMapping(path = "/cameras", consumes = "application/json", produces = "application/json")
 	@ResponseStatus(HttpStatus.CREATED)
 	public CameraDTO put(@RequestBody CameraDTO camera) {
@@ -115,7 +122,7 @@ public class CamerasController {
 		servicePubSub.deleteById(id);
 	}
 	
-	@DeleteMapping(path = "/cameras", produces = "application/json")
+	@DeleteMapping(path = "/cameras/", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
 	void delete() {
 		service.evictAllCacheValues();

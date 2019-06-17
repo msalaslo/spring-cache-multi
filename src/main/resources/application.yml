@@ -49,6 +49,10 @@ spring:
           maximumSize: 200000
           #timeToLiveSeconds: #SECONDS
           #maxIdleSeconds: #SECONDS
+        - cacheName: cameras/allKeys
+          maximumSize: 200000
+          #timeToLiveSeconds: #SECONDS
+          #maxIdleSeconds: #SECONDS          
         - cacheName: voss/ByCountryAndInstallation
           maximumSize: 200000
           #timeToLiveSeconds: #SECONDS
@@ -88,6 +92,14 @@ spring:
           #expireAfterWrite: #SECONDS
           #refreshAfterWrite: #SECONDS
           #concurrencyLevel:
+        - cacheName: cameras/allKeys
+          #initialCapacity:
+          maximumSize: 20000
+          #maximumWeight:
+          #expireAfterAccess: #SECONDS
+          #expireAfterWrite: #SECONDS
+          #refreshAfterWrite: #SECONDS
+          #concurrencyLevel:          
         - cacheName: voss/ByCountryAndInstallation
           #initialCapacity:
           maximumSize: 200000

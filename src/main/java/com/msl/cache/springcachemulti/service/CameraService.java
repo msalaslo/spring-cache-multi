@@ -1,5 +1,6 @@
 package com.msl.cache.springcachemulti.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.msl.cache.springcachemulti.api.dto.CameraDTO;
@@ -14,6 +15,8 @@ public interface CameraService {
 	public void deleteById(String id);
 	public void evictAllCacheValues();
 	public PageDTO<CameraDTO> findAll(int page, int pageSize);
+	public PageDTO<CameraDTO> findAllNoCache(int page, int pageSize);
+	public List<String> findAllKeys(int page, int pageSize);
 	public PageDTO<CameraDTO> findAllVoss(int page, int pageSize);
 	public Iterable<CameraDTO> findVossDevicesByCountryAndInstallation(String country, String installation);
 	public long count();
