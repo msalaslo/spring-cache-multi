@@ -9,10 +9,6 @@ server:
 ## then change to "update" which just updates the schema when necessary
 #spring.jpa.hibernate.ddl-auto=create
 spring:
-  boot:    admin:      context-path: /admin
-      client:
-        url: http://localhost:${server.port}${server.servlet.context-path}/${spring.boot.admin.context-path}      ui:        title: SD Multi Layer Cache
-  
   jpa:
     #database-platform: org.hibernate.dialect.Oracle10gDialect
     show-sql: false
@@ -150,7 +146,7 @@ async:
   executor:
       core-pool-size: 10
       max-pool-size: 10
-      queue-capacity: 10
+      queue-capacity: 100
 
 # =========================
 # HEALTH INDICATORS

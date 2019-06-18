@@ -17,6 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+/* TODO This a simple loader  for the PoC, it should be optimized in order to minimize 
+	the load time in cache
+*/ 
 class CameraLoaderServiceImpl implements CameraLoaderService {
 
 	@Autowired

@@ -2,7 +2,6 @@ package com.msl.cache.springcachemulti.api.dto;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

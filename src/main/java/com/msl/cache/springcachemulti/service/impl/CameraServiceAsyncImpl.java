@@ -8,6 +8,10 @@ import com.msl.cache.springcachemulti.api.dto.CameraDTO;
 import com.msl.cache.springcachemulti.service.CameraService;
 import com.msl.cache.springcachemulti.service.CameraServiceAsync;
 
+/**
+ * Wrapper to execute asynchronously CameraService methods 
+ *
+ */
 @Service
 public class CameraServiceAsyncImpl implements CameraServiceAsync {
 
