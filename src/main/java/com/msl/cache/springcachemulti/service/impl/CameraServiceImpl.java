@@ -96,7 +96,7 @@ public class CameraServiceImpl implements CameraService {
 			@CachePut(value = "cameras/ByCountryAndInstallationAndZone", key = "#camera.countryCode + #camera.installationId + #camera.zone", cacheManager = "cacheManager"),
 			@CachePut(value = "cameras/BySerial", key = "#camera.serial", cacheManager = "cacheManager") })
 	public CameraDTO put(CameraDTO camera) {
-		LOGGER.info("PUT::This method does not create the object in the database, only has been cached:" + camera);
+//		LOGGER.debug("PUT::This method does not create the object in the database, only has been cached:" + camera);
 		return camera;
 	}
 	

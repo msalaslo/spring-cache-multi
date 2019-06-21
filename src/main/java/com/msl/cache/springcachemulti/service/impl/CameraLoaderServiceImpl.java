@@ -44,29 +44,22 @@ class CameraLoaderServiceImpl implements CameraLoaderService {
 		LOGGER.info("loading page {} from camera repository", page);
 		PageDTO<CameraDTO> cameraPage = cameraService.findAll(page, pageSize);
 		List<CameraDTO> cameras = cameraPage.getContent();
-		loadToCaches(cameras);
+		loadToCachesStream(cameras);
 	}
 	
-	public void loadToCaches(List<CameraDTO> cameras) {
-		for (Iterator<CameraDTO> iterator = cameras.iterator(); iterator.hasNext();) {
-			CameraDTO cameraDTO = (CameraDTO) iterator.next();
+	public void loadToCachesStream(List<CameraDTO> cameras) {
+		cameras.stream().forEach((c)-> {
 			//Esto pone en cache las que camaras que van de una en una (serial y country+installation+zone)
-			cameraServiceAsync.put(cameraDTO);
+			cameraServiceAsync.put(c);
 			//Esto pone en cache las que camaras que van agrupadas (voss y country+installation)
-			findAndPut(cameraDTO);
-		}
+			findGroupedCamerasAndPut(c);
+		});
 	}
 	
-	public void findAndPut(CameraDTO cameraDTO) {
-		String country = cameraDTO.getCountryCode();
-		String installation = cameraDTO.getInstallationId();
-		String zone = cameraDTO.getZone();
-		String serial = cameraDTO.getSerial();
-		cameraServiceAsync.findByCountryAndInstallation(country, installation);
-		cameraServiceAsync.findByCountryAndInstallationAndZone(country, installation, zone);
-		cameraServiceAsync.findById(serial);
+	public void findGroupedCamerasAndPut(CameraDTO cameraDTO) {
+		cameraServiceAsync.findByCountryAndInstallation(cameraDTO.getCountryCode(), cameraDTO.getInstallationId());
 		//Para la PoC: Comentado porque de momento no hay voss, evitamos hacer consultas a la BBDD que no se cachean porque siempre devuelve null
-//		cameraServiceAsync.findVossDevicesByCountryAndInstallation(country, installation);
+//		cameraServiceAsync.findVossDevicesByCountryAndInstallation(cameraDTO.getCountryCode(), cameraDTO.getInstallationId());
 	}
 	
 }

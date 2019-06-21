@@ -85,7 +85,7 @@ public class CamerasController {
 	
 
 	@GetMapping(path = "/cameras/page", produces = "application/json")
-	@ApiOperation(value = "Returns paged Cameras caching the camera keys (serial) and then retrieving the content fron the individual cache")
+	@ApiOperation(value = "Returns paged Cameras caching the camera keys (serial) and then retrieving the content from the individual cache")
 	public ResponseEntity<List<CameraDTO>> findAllCachedKeys(@RequestParam(required = true) final Integer page,
 			@RequestParam(required = true) final Integer size, @RequestParam(required = false) final String sort) {
 		LOGGER.info("Finding all cameras page: {} and size {}", page, size);
