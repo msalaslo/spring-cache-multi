@@ -112,19 +112,19 @@ public class CamerasController {
 	@PutMapping(path = "/cameras/{id}", consumes = "application/json", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
 	public CameraDTO update(@RequestBody CameraDTO newCamera, @PathVariable String id) {
-		LOGGER.info("Finding cameras by id..." + id);
-		return service.update(newCamera, id);
+		LOGGER.info("Firsly, we clean the camera from the cache by id..." + id);
+		servicePubSub.deleteById(id);
+		LOGGER.info("Updating camera by id..." + id);
+		return service.updateInRepository(newCamera, id);
 	}
 
 	@DeleteMapping(path = "/cameras/{id}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
-	void delete(@PathVariable String id) {
-		servicePubSub.deleteById(id);
-	}
-	
-	@DeleteMapping(path = "/cameras/", produces = "application/json")
-	@ResponseStatus(HttpStatus.OK)
-	void delete() {
-		service.evictAllCacheValues();
+	void delete(@PathVariable(required = false) String id) {
+		if(id == null) {
+			service.evictAllCacheValues();
+		}else {
+			servicePubSub.deleteById(id);
+		}
 	}
 }

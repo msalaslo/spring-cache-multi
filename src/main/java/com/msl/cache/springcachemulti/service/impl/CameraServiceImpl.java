@@ -93,15 +93,15 @@ public class CameraServiceImpl implements CameraService {
 	}
 
 	@Caching(put = {
-			@CachePut(value = "cameras/ByCountryAndInstallationAndZone", key = "#camera.countryCode + #camera.installationId + #camera.zone", cacheManager = "cacheManager"),
-			@CachePut(value = "cameras/BySerial", key = "#camera.serial", cacheManager = "cacheManager") })
+			@CachePut(value = "cameras/ByCountryAndInstallationAndZone", key = "#camera.countryCode + #camera.installationId + #camera.zone", cacheManager = "cacheManager", unless = "#result == null"),
+			@CachePut(value = "cameras/BySerial", key = "#camera.serial", cacheManager = "cacheManager", unless = "#result == null") })
 	public CameraDTO put(CameraDTO camera) {
 		LOGGER.info("PUT::This method does not create the object in the database, only has been cached:" + camera);
 		return camera;
 	}
 	
 	@Caching(put = {
-			@CachePut(value = "cameras/ByCountryAndInstallation", key = "#camera.countryCode + #camera.installationId", cacheManager = "cacheManager") })
+			@CachePut(value = "cameras/ByCountryAndInstallation", key = "#camera.countryCode + #camera.installationId", cacheManager = "cacheManager", unless = "#result == null or #result.size()==0") })
 	public Iterable<CameraDTO> putByCountryAndInstallation(Iterable<CameraDTO> cameras) {
 		LOGGER.info("PUT::This method does not create the object in the database, only has been cached:" + cameras);
 		return cameras;
@@ -114,7 +114,7 @@ public class CameraServiceImpl implements CameraService {
 		return cameras;
 	}
 
-	@CachePut(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager")
+	@CachePut(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager", unless = "#result == null")
 	public CameraDTO update(CameraDTO camera, String id) {
 		LOGGER.debug("This method does not integrate with the database, update camera {} with id {}:", camera, id);
 		return repository.findById(id).map(newCamera -> {
@@ -137,18 +137,16 @@ public class CameraServiceImpl implements CameraService {
 		return repository.save(camera);
 	}
 
-	@CachePut(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager")
+	@CachePut(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager", unless = "#result == null")
 	public CameraDTO updateInRepository(CameraDTO camera, String id) {
 		LOGGER.debug("update camera {} with id {}:", camera, id);
 		Camera cameraEntity = cameraConverter.toCameraEntity(camera);
 		return repository.findById(id).map(newCamera -> {
-			camera.setSerial(camera.getSerial());
+			cameraEntity.setPassword(newCamera.getPassword());
 			Camera newCameraEntity = repository.save(cameraEntity);
 			return cameraConverter.toCameraDto(newCameraEntity);
 		}).orElseGet(() -> {
-			camera.setId(id);
-			Camera newCameraEntity = repository.save(cameraEntity);
-			return cameraConverter.toCameraDto(newCameraEntity);
+			return null;
 		});
 	}
 

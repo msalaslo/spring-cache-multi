@@ -12,6 +12,7 @@ public interface CameraService {
 	public Iterable<CameraDTO> findByCountryAndInstallation(String country, String installation);
 	public Optional<CameraDTO> findByCountryAndInstallationAndZone(String country, String installation, String zone);	
 	public CameraDTO update(CameraDTO camera, String id);
+	public CameraDTO updateInRepository(CameraDTO camera, String id);
 	public void deleteById(String id);
 	public void evictAllCacheValues();
 	public PageDTO<CameraDTO> findAll(int page, int pageSize);
