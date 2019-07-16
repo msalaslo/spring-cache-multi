@@ -4,6 +4,8 @@ import java.time.Duration;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CachingConfigurerSupport;
+import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -35,7 +37,7 @@ import lombok.Data;
 @Data
 @Configuration
 //TODO sustituir los  @Value por @ConfigurationProperties
-public class RedisConfiguration {
+public class RedisConfiguration extends CachingConfigurerSupport {
 
     //  Database index used by the connection factory.
     @Value("${spring.redis.database}")
@@ -231,6 +233,11 @@ public class RedisConfiguration {
     @Bean
     ChannelTopic topic() {
         return new ChannelTopic("pubsub:queue");
+    }
+    
+    @Override
+    public CacheErrorHandler errorHandler() {
+        return new RedisCacheErrorHandler();
     }
 }
 

@@ -15,18 +15,18 @@ spring:
   
   jpa:
     #database-platform: org.hibernate.dialect.Oracle10gDialect
-    show-sql: false
+    show-sql: true
     open-in-view: true
-  datasource:
-    type: com.zaxxer.hikari.HikariDataSource 
-    url: jdbc:oracle:thin:@es1prerac03-scan:1521/PROTMPRE_SRV.sp.securitasdirect.local
-    username: RS_SCORR
-    password: RS_SCORR
-    driver-class-name: oracle.jdbc.OracleDriver
-    hikari:      maximum-pool-size: 200
-      connection-test-query: SELECT 1 FROM DUAL
-      connection-timeout: 3000
-      leak-detection-threshold: 0
+#  datasource:
+#    type: com.zaxxer.hikari.HikariDataSource 
+#    url: jdbc:oracle:thin:@es1prerac03-scan:1521/PROTMPRE_SRV.sp.securitasdirect.local
+#    username: RS_SCORR
+#    password: RS_SCORR
+#    driver-class-name: oracle.jdbc.OracleDriver
+#    hikari: #     maximum-pool-size: 200
+ #     connection-test-query: SELECT 1 FROM DUAL
+ #     connection-timeout: 3000
+ #     leak-detection-threshold: 0
        
   cache:
     two-layer: ${TWO_LAYER_CACHE}    
