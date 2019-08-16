@@ -26,6 +26,8 @@ import com.msl.cache.springcachemulti.service.CameraServicePubSub;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.Authorization;
+import io.swagger.annotations.AuthorizationScope;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -40,7 +42,18 @@ public class CamerasController {
 	CameraServicePubSub servicePubSub;
 
 	@GetMapping(path = "/cameras/{id}")
-	@ApiOperation(value = "Returns a Camera by serial number (ID)")
+	@ApiOperation(value = "Returns a Camera by serial number (ID)",
+			authorizations = {
+					  @Authorization(
+							  value="OAuth2", 
+							  scopes = {
+									  @AuthorizationScope(
+											  scope = "read_scope", 
+											  description = "allows GET cameras by ID")
+									  }
+							  )
+			  	}
+	)
 	public ResponseEntity<CameraDTO> getById(@ApiParam("Serial of the Camera to be obtained. Cannot be empty.") @PathVariable(value = "id", required = true) final String id) {
 		LOGGER.info("Finding cameras by id (serial): {}", id);
 		Optional<CameraDTO> camera = service.findById(id);
@@ -53,9 +66,10 @@ public class CamerasController {
 
 	@GetMapping(path = "/cameras", produces = "application/json")
 	@ApiOperation(value = "Returns a Cameras by country, zone or installation")
-	public ResponseEntity<Iterable<CameraDTO>> get(@RequestParam(required = false) final String country,
-			@RequestParam(required = false) final String zone,
-			@RequestParam(required = false) final String installation) {
+	public ResponseEntity<Iterable<CameraDTO>> get(
+			@ApiParam("Country, optional") @RequestParam(required = false) final String country,
+			@ApiParam("Zone, optional") @RequestParam(required = false) final String zone,
+			@ApiParam("Installation, optional") @RequestParam(required = false) final String installation) {
 		if (zone != null) {
 			LOGGER.info("Finding cameras by country: {}, installation: {}, zone: {}", country, installation, zone);
 			Optional<CameraDTO> camera = service.findByCountryAndInstallationAndZone(country, installation, zone);
@@ -104,7 +118,17 @@ public class CamerasController {
 	
 	@PostMapping(path = "/cameras", consumes = "application/json", produces = "application/json")
 	@ResponseStatus(HttpStatus.CREATED)
-	@ApiOperation(value = "Inserts a new camera.")
+	@ApiOperation(value = "Inserts a new camera.",
+			authorizations = {
+					  @Authorization(
+							  value="OAuth2", 
+							  scopes = {
+									  @AuthorizationScope(
+											  scope = "write_scope", 
+											  description = "allows GET cameras by ID")
+									  }
+							  )
+			  	})
 	public CameraDTO put(@RequestBody CameraDTO camera) {
 		LOGGER.info("Inserting camera:" + camera);
 		return service.put(camera);
@@ -112,6 +136,17 @@ public class CamerasController {
 
 	@PutMapping(path = "/cameras/{id}", consumes = "application/json", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
+	@ApiOperation(value = "Updates a camera.",
+	authorizations = {
+			  @Authorization(
+					  value="OAuth2", 
+					  scopes = {
+							  @AuthorizationScope(
+									  scope = "write_scope", 
+									  description = "allows GET cameras by ID")
+							  }
+					  )
+	  	})
 	public CameraDTO update(@RequestBody CameraDTO newCamera, @PathVariable String id) {
 		LOGGER.info("Updating camera by id:" + id);
 		return service.update(newCamera, id);
@@ -119,6 +154,17 @@ public class CamerasController {
 
 	@DeleteMapping(path = "/cameras/{id}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
+	@ApiOperation(value = "Deletes a camera.",
+	authorizations = {
+			  @Authorization(
+					  value="OAuth2", 
+					  scopes = {
+							  @AuthorizationScope(
+									  scope = "admin_scope", 
+									  description = "allows GET cameras by ID")
+							  }
+					  )
+	  	})
 	public void delete(@PathVariable String id) {
 		LOGGER.info("Deleting camera by id {} and Publishing change.", id);
 		servicePubSub.deleteById(id);

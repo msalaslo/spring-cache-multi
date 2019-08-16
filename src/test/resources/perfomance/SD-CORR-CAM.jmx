@@ -15,9 +15,9 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">${__P(loops,1)}</stringProp>
+          <stringProp name="LoopController.loops">${__P(loops,0)}</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${__P(threads,1)}</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${__P(threads,0)}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">${__P(ramp-up-seconds,0)}</stringProp>
         <longProp name="ThreadGroup.start_time">952513651000</longProp>
         <longProp name="ThreadGroup.end_time">4076651251000</longProp>
@@ -32,7 +32,7 @@
               <stringProp name="Argument.name">host</stringProp>
               <stringProp name="Argument.value">${__P(host,localhost)}</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
-              <stringProp name="Argument.desc">env</stringProp>
+              <stringProp name="Argument.desc">${__P(host,localhost)}</stringProp>
             </elementProp>
             <elementProp name="port" elementType="Argument">
               <stringProp name="Argument.name">port</stringProp>
@@ -44,17 +44,25 @@
               <stringProp name="Argument.name">think-time</stringProp>
               <stringProp name="Argument.value">${__P(think-time,0)}</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
-              <stringProp name="Argument.desc">test</stringProp>
+              <stringProp name="Argument.desc">${__P(think-time,0)}</stringProp>
             </elementProp>
             <elementProp name="context" elementType="Argument">
               <stringProp name="Argument.name">context</stringProp>
               <stringProp name="Argument.value">${__P(context,correlation/v1.0)}</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
+              <stringProp name="Argument.desc">${__P(context,correlation/v1.0)}</stringProp>
             </elementProp>
             <elementProp name="protocol" elementType="Argument">
               <stringProp name="Argument.name">protocol</stringProp>
               <stringProp name="Argument.value">${__P(protocol,http)}</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
+              <stringProp name="Argument.desc">${__P(protocol,http)}</stringProp>
+            </elementProp>
+            <elementProp name="oauth_token" elementType="Argument">
+              <stringProp name="Argument.name">oauth_token</stringProp>
+              <stringProp name="Argument.value">${__P(oauth_token,288e8392-e12c-3a06-9b2b-813e4eb14c21)}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <stringProp name="Argument.desc">${__P(oauth_token,288e8392-e12c-3a06-9b2b-813e4eb14c21)}</stringProp>
             </elementProp>
           </collectionProp>
         </Arguments>
@@ -100,7 +108,7 @@
         </ResultCollector>
         <hashTree/>
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="PARAMS CSV Data Set Config" enabled="true">
-          <stringProp name="TestPlan.comments">dateFrom dateTo availability search</stringProp>
+          <stringProp name="TestPlan.comments">Cameras data</stringProp>
           <stringProp name="delimiter">;</stringProp>
           <stringProp name="fileEncoding">UTF-8</stringProp>
           <stringProp name="filename">SD-POC-CORR-CAM.csv</stringProp>
@@ -129,10 +137,6 @@
         <hashTree/>
         <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
           <collectionProp name="HeaderManager.headers">
-            <elementProp name="Referer" elementType="Header">
-              <stringProp name="Header.name">Referer</stringProp>
-              <stringProp name="Header.value">http://${host}</stringProp>
-            </elementProp>
             <elementProp name="Accept-Language" elementType="Header">
               <stringProp name="Header.name">Accept-Language</stringProp>
               <stringProp name="Header.value">es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3</stringProp>
@@ -141,10 +145,6 @@
               <stringProp name="Header.name">Accept-Encoding</stringProp>
               <stringProp name="Header.value">gzip, deflate, br</stringProp>
             </elementProp>
-            <elementProp name="User-Agent" elementType="Header">
-              <stringProp name="Header.name">User-Agent</stringProp>
-              <stringProp name="Header.value">Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0</stringProp>
-            </elementProp>
             <elementProp name="Accept" elementType="Header">
               <stringProp name="Header.name">Accept</stringProp>
               <stringProp name="Header.value">application/json;</stringProp>
@@ -152,6 +152,10 @@
             <elementProp name="" elementType="Header">
               <stringProp name="Header.name">Content-type</stringProp>
               <stringProp name="Header.value">application/json;charset=utf-8</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">Authorization</stringProp>
+              <stringProp name="Header.value">Bearer ${oauth_token}</stringProp>
             </elementProp>
           </collectionProp>
         </HeaderManager>
@@ -215,11 +219,16 @@
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-    &quot;country&quot;: &quot;${country}&quot;,&#xd;
-    &quot;installation&quot;: &quot;${installation}&quot;,&#xd;
-    &quot;zone&quot;: &quot;${zone}&quot;,&#xd;
-    &quot;serial&quot;: &quot;${serial}${counter}&quot;&#xd;
-}</stringProp>
+            &quot;serial&quot;: &quot;${serial}&quot;,&#xd;
+            &quot;countryCode&quot;: &quot;${country}&quot;,&#xd;
+            &quot;installationId&quot;: &quot;${installation}&quot;,&#xd;
+            &quot;password&quot;: &quot;123456&quot;,&#xd;
+            &quot;zone&quot;: &quot;${zone}&quot;,&#xd;
+            &quot;alias&quot;: &quot;SALA DE 1ESPERA&quot;,&#xd;
+            &quot;creationTime&quot;: &quot;2018-04-02T11:26:09.610+0000&quot;,&#xd;
+            &quot;lastUpdateTime&quot;: &quot;2018-04-02T11:26:09.610+0000&quot;,&#xd;
+            &quot;vossServices&quot;: null&#xd;
+        }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
@@ -549,7 +558,7 @@
           <hashTree/>
         </hashTree>
       </hashTree>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
@@ -585,7 +594,7 @@
         <stringProp name="filename">C:\Users\msalas\Documents\workspace-sts-securitas-arq-arquetipo\spring-cache-multi\src\test\resources\perfomance\jmeter.jtl</stringProp>
       </ResultCollector>
       <hashTree/>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
         <boolProp name="ResultCollector.error_logging">true</boolProp>
         <objProp>
           <name>saveConfig</name>
@@ -621,7 +630,7 @@
         <stringProp name="filename">C:\Users\msalas\Documents\workspace-sts-securitas-arq-arquetipo\spring-cache-multi\src\test\resources\perfomance\jmeter.jtl</stringProp>
       </ResultCollector>
       <hashTree/>
-      <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="true">
+      <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="false">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
@@ -657,7 +666,7 @@
         <stringProp name="filename">C:\Users\msalas\Documents\workspace-sts-securitas-arq-arquetipo\spring-cache-multi\src\test\resources\perfomance\jmeter.jtl</stringProp>
       </ResultCollector>
       <hashTree/>
-      <ResultCollector guiclass="RespTimeGraphVisualizer" testclass="ResultCollector" testname="Response Time Graph" enabled="true">
+      <ResultCollector guiclass="RespTimeGraphVisualizer" testclass="ResultCollector" testname="Response Time Graph" enabled="false">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
@@ -690,7 +699,7 @@
             <connectTime>true</connectTime>
           </value>
         </objProp>
-        <stringProp name="filename">C:\Users\msalas\Documents\workspace-sts-securitas-arq-arquetipo\spring-cache-multi\src\test\resources\perfomance\jmeter.jtl</stringProp>
+        <stringProp name="filename">C:\Users\msalas\OneDrive - Vector ITC Group\SECURITAS\REDIS\jmeter-P12.jtl</stringProp>
         <stringProp name="RespTimeGraph.interval">10</stringProp>
       </ResultCollector>
       <hashTree/>

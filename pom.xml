@@ -36,6 +36,13 @@
 		<m2e.apt.activation>jdt_apt</m2e.apt.activation>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>jcenter.bintray.com</id>
+			<url>https://jcenter.bintray.com</url>
+		</repository>
+	</repositories>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -138,13 +145,15 @@
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 
-		<!-- The Jedis Java client implementation: TODO After the PoC use only a implementation (JEDIS or LETTUCE)-->
+		<!-- The Jedis Java client implementation: TODO After the PoC use only 
+			a implementation (JEDIS or LETTUCE) -->
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 		</dependency>
 
-		<!-- The Lettuce Java client implementation (Supports for reactive): TODO After the PoC use only a implementation (JEDIS or LETTUCE) -->
+		<!-- The Lettuce Java client implementation (Supports for reactive): TODO 
+			After the PoC use only a implementation (JEDIS or LETTUCE) -->
 		<dependency>
 			<groupId>io.lettuce</groupId>
 			<artifactId>lettuce-core</artifactId>

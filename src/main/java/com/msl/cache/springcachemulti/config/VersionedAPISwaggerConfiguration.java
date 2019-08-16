@@ -2,7 +2,9 @@ package com.msl.cache.springcachemulti.config;
 
 import static springfox.documentation.builders.PathSelectors.regex;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 
@@ -11,13 +13,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import springfox.documentation.builders.OAuthBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.GrantType;
+import springfox.documentation.service.ResourceOwnerPasswordCredentialsGrant;
+import springfox.documentation.service.SecurityScheme;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.paths.AbstractPathProvider;
 import springfox.documentation.spring.web.paths.Paths;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger.web.ApiKeyVehicle;
+import springfox.documentation.swagger.web.SecurityConfiguration;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
@@ -38,10 +47,17 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class VersionedAPISwaggerConfiguration {
 	
+//	@Value("${uaa.clientId}")
+	String clientId = "clienId";
+//	@Value("${uaa.clientSecret}")
+	String clientSecret = "clientSecret";
+//	@Value("${uaa.url}")
+	String oAuthServerUri = "https://mc-ef-apim-appservice.epi.securitasdirect.local:8243";
+	
 	@Autowired
 	private ServletContext servletContext;
 	
-	private static final String GROUP_NAME = "routing-service";
+	private static final String GROUP_NAME = "camera-correlation";
 	private static final String BASE_PACKAGE = "com.msl.cache.springcachemulti.api";
 	private static final String APIM_PREFIX = "APIM";
 	private static final String V10 = "v1.0";
@@ -81,7 +97,8 @@ public class VersionedAPISwaggerConfiguration {
             .apiInfo(getApiInfo(version))
             .pathProvider(new RemoveAPIVersionFromOperationUrlsPathProvider(context, version))
             .useDefaultResponseMessages(false)
-            .enableUrlTemplating(true);
+            .enableUrlTemplating(false)
+            .securitySchemes(Collections.singletonList(oauth()));
         }
 
     	private ApiInfo getApiInfo(String version) {
@@ -90,7 +107,7 @@ public class VersionedAPISwaggerConfiguration {
     				new Contact("ARQ IT", "https://faas.securitasdirect.local/",
     						"SP.DG.ITM2MPlatformDev@securitasdirect.es"),
     				"License of API for Securitas Direct use only", 
-    				"License of API for Securitas Direct use only",
+    				"https://faas.securitasdirect.local/",
     				Collections.emptyList());
     	}
     }
@@ -125,5 +142,35 @@ public class VersionedAPISwaggerConfiguration {
             return Paths.removeAdjacentForwardSlashes(
                     uriComponentsBuilder.path(operationPath.replaceFirst(version, "")).build().toString());
         }
+    }
+    
+	@Bean
+	List<GrantType> grantTypes() {
+		List<GrantType> grantTypes = new ArrayList<>();
+        String tokenUrl = oAuthServerUri+"/token";
+        grantTypes.add(new ResourceOwnerPasswordCredentialsGrant(tokenUrl));
+        return grantTypes;
+	}
+	
+	@Bean
+    SecurityScheme oauth() {
+        return new OAuthBuilder()
+                .name("OAuth2")
+                .scopes(scopes())
+                .grantTypes(grantTypes())
+                .build();
+    }
+	
+	private List<AuthorizationScope> scopes() {
+		List<AuthorizationScope> list = new ArrayList<AuthorizationScope>();
+		list.add(new AuthorizationScope("read_scope","Grants read access"));
+		list.add(new AuthorizationScope("write_scope","Grants write access"));
+		list.add(new AuthorizationScope("admin_scope","Grants read write and delete access"));
+		return list;
+    }	
+
+	@Bean
+    public SecurityConfiguration securityInfo() {
+        return new SecurityConfiguration(clientId, clientSecret, "realm", clientId, "apiKey", ApiKeyVehicle.HEADER, "Authorization", "");
     }
 }
