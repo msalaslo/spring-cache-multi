@@ -8,22 +8,20 @@ import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisSentinelConfiguration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.redis.listener.ReactiveRedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
-import com.msl.cache.springcachemulti.domain.entity.Camera;
 import com.msl.cache.springcachemulti.pubsub.MessagePublisher;
 import com.msl.cache.springcachemulti.pubsub.RedisMessagePublisher;
 import com.msl.cache.springcachemulti.pubsub.RedisMessageSubscriber;
@@ -89,7 +87,8 @@ public class RedisConfiguration extends CachingConfigurerSupport {
      * @return
      */
     @Bean
-    public LettuceConnectionFactory lettuceConnectionFactory() {
+    @Primary
+    public ReactiveRedisConnectionFactory reactiveConnectionFactory() {
         if (sentinelEnabled) {
             RedisSentinelConfiguration redisSentinelConfiguration = new RedisSentinelConfiguration();
             redisSentinelConfiguration.setMaster(sentinelMaster);
@@ -115,39 +114,6 @@ public class RedisConfiguration extends CachingConfigurerSupport {
             return new LettuceConnectionFactory(config);
         }
     }
-    
-    /**
-     * Connection factory
-     *
-     * @return
-     */
-    @Bean
-    public JedisConnectionFactory jedisConnectionFactory() {
-        if (sentinelEnabled) {
-            RedisSentinelConfiguration redisSentinelConfiguration = new RedisSentinelConfiguration();
-            redisSentinelConfiguration.setMaster(sentinelMaster);
-            redisSentinelConfiguration.setDatabase(database);
-            redisSentinelConfiguration.setPassword(password);
-            for (String sentinelNode : sentinelNodes) {
-                String sentinelHost = sentinelNode.split(":")[0];
-                Integer sentinelPort = Integer.parseInt(sentinelNode.split(":")[1]);
-                redisSentinelConfiguration.sentinel(sentinelHost, sentinelPort);
-            }
-            return new JedisConnectionFactory(redisSentinelConfiguration);
-        } else if (clusterEnabled) {
-            RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(clusterNodes);
-            redisClusterConfiguration.setMaxRedirects(clusterMaxRedirects);
-            redisClusterConfiguration.setPassword(password);
-            return new JedisConnectionFactory(redisClusterConfiguration);
-        } else {            
-            RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
-            config.setDatabase(database);
-            config.setHostName(host);
-            config.setPort(port);
-            config.setPassword(password);
-            return new JedisConnectionFactory(config);
-        }
-    }
 
     /**
      * Redis cache manager.
@@ -155,7 +121,7 @@ public class RedisConfiguration extends CachingConfigurerSupport {
      * @return the cache manager
      */
     @Bean(name = "redisCacheManager")
-    public RedisCacheManager redisCacheManager(JedisConnectionFactory connectionFactory) {
+    public RedisCacheManager redisCacheManager(LettuceConnectionFactory connectionFactory) {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .disableCachingNullValues()
                 .entryTtl(Duration.ofSeconds(ttlSeconds))
@@ -166,68 +132,32 @@ public class RedisConfiguration extends CachingConfigurerSupport {
     }
     
     /**
-     * Redis cache manager.
-     *
-     * @return the cache manager
-     */
-//    @Bean(name = "redisCacheManager")
-//    public RedisCacheManager redisCacheManager(LettuceConnectionFactory lettuceConnectionFactory) {
-//        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-//                .disableCachingNullValues()
-//                .entryTtl(Duration.ofSeconds(ttlSeconds))
-//                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()));
-//        redisCacheConfiguration.usePrefix();
-//       return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(lettuceConnectionFactory)
-//                        .cacheDefaults(redisCacheConfiguration).build();
-//    }
-    
-    /**
      * Since it is quite common for the keys and values stored in Redis to be java.lang.String, 
      * the Redis modules provides two extensions to RedisConnection and RedisTemplate.
      * For String intensive operations consider the dedicated StringRedisTemplate.
      * @return StringRedisTemplate
      */
 	@Bean
-	public StringRedisTemplate stringRedisTemplate() {
-		StringRedisTemplate template = new StringRedisTemplate();
-	    template.setConnectionFactory(jedisConnectionFactory());
-//		template.setConnectionFactory(lettuceConnectionFactory());
-		return template;
+	public ReactiveRedisTemplate<String, String> stringRectiveRedisTemplate
+	  (ReactiveRedisConnectionFactory lettuceConnectionFactory) {
+	    return new ReactiveRedisTemplate<>(lettuceConnectionFactory, RedisSerializationContext.string());
 	}
     
-	@Bean
-	public RedisTemplate<String, Object> redisTemplateGeneric() {
-		RedisTemplate<String, Object> template = new RedisTemplate<>();
-	    template.setConnectionFactory(jedisConnectionFactory());
-//		template.setConnectionFactory(lettuceConnectionFactory());
-		return template;
-	}
-	
-	@Bean
-	public RedisTemplate<String, Camera> redisTemplate() {
-		RedisTemplate<String, Camera> template = new RedisTemplate<>();
-	    template.setConnectionFactory(jedisConnectionFactory());
-//		template.setConnectionFactory(lettuceConnectionFactory());
-		return template;
-	}
-	
-    @Bean
-    MessageListenerAdapter messageListener(RedisMessageSubscriber suscriber) {
-        return new MessageListenerAdapter(suscriber);
-    }
+//    @Bean
+//    MessageListenerAdapter messageListener(RedisMessageSubscriber suscriber) {
+//        return new MessageListenerAdapter(suscriber);
+//    }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(RedisMessageSubscriber suscriber) {
-        final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-//        container.setConnectionFactory(lettuceConnectionFactory());
-        container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(messageListener(suscriber), topic());
+    ReactiveRedisMessageListenerContainer redisContainer(RedisMessageSubscriber suscriber) {
+        final ReactiveRedisMessageListenerContainer container = new ReactiveRedisMessageListenerContainer(reactiveConnectionFactory());
+//        container.addMessageListener(messageListener(suscriber), topic());
         return container;
     }
 
     @Bean
     MessagePublisher redisPublisher() {
-        return new RedisMessagePublisher(stringRedisTemplate(), topic());
+        return new RedisMessagePublisher(stringRectiveRedisTemplate(reactiveConnectionFactory()), topic());
     }
 
     @Bean

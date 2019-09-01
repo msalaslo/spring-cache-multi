@@ -78,7 +78,7 @@
 
 		<dependency>
 			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct-jdk8</artifactId>
+			<artifactId>mapstruct</artifactId>
 			<version>${mapstruct.version}</version>
 			<optional>true</optional>
 		</dependency>
@@ -132,16 +132,10 @@
 			<artifactId>caffeine</artifactId>
 		</dependency>
 
-		<!-- REDIS Cache -->
+		<!-- REACTIVE REDIS Cache -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-redis</artifactId>
-		</dependency>
-
-		<!-- The Jedis Java client implementation -->
-		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
+			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
 		</dependency>
 
 		<!-- The Lettuce Java client implementation (Supports for reactive) -->
