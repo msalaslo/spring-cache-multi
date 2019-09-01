@@ -139,9 +139,9 @@ spring:
       max-redirects: 10 # Maximum number of redirects to follow when executing commands across the cluster.
       nodes: ${REDIS_CLUSTER_NODES} # Comma-separated list of "host:port" pairs to bootstrap from. pre-cam-scorr-cache.ilqfxs.ng.0001.euw1.cache.amazonaws.com:6379
     sentinel:
-      enabled: false
+      enabled: true
       master: mymaster # Name of Redis server.
-      nodes: 127.0.0.1:27379 # Comma-separated list of host:port pairs.
+      nodes: 192.168.99.100:27379 # Comma-separated list of host:port pairs.
 
 # =========================
 # ASYNC EXECUTOR
