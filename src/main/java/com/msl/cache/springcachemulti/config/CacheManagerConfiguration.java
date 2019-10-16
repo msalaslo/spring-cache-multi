@@ -2,9 +2,7 @@ package com.msl.cache.springcachemulti.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.support.CompositeCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -16,10 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 public class CacheManagerConfiguration {
-
-	// Activate two level cache
-	@Value("${spring.cache.two-layer}")
-	private boolean twoLayer;
 
 	/**
 	 * The caffeine cache manager.
@@ -53,6 +47,12 @@ public class CacheManagerConfiguration {
 	 */
 	@Autowired
 	private HazelcastCacheConfiguration hazelcastCacheConfiguration;
+	
+	/**
+	 * RedisCacheConfiguration cache configuration
+	 */
+	@Autowired
+	private RedisConfiguration redisCacheConfiguration;
 
 	/**
 	 * Cache manager.
@@ -63,21 +63,18 @@ public class CacheManagerConfiguration {
 	@Primary
 	@Qualifier("cacheManager")
 	public CacheManager cacheManager() {
-		if (twoLayer) {
-			if (caffeineCacheConfiguration.isActive()) {
-				LOGGER.info("Two layer cache activated: CAFFEINE and REDIS");
-				return new TwoLayerCacheManagerImpl(caffeineCacheManager, redisCacheManager);
-			} else if (hazelcastCacheConfiguration.isActive()) {
-				LOGGER.info("Two layer cache activated: HAZELCAST and REDIS");
-				return new TwoLayerCacheManagerImpl(hazelcastCacheManager, redisCacheManager);
-			} else {
-				String msg = "Two layer cache config activated, but no near cache ativated. Please activate one near cache (caffeine, hazelcast)";
-				LOGGER.warn(msg);
-				throw new RuntimeException(msg);
-			}
-		} else {
-			LOGGER.info("Two layer cache deactivated using only REDIS");
-			return new CompositeCacheManager(redisCacheManager);
+		TwoLayerCacheManagerImpl cacheManager = new TwoLayerCacheManagerImpl();
+		if (caffeineCacheConfiguration.isActive()) {
+			LOGGER.info("Cache activated: CAFFEINE");
+			cacheManager.addNearLayer(caffeineCacheManager);			
+		} else if (hazelcastCacheConfiguration.isActive()) {
+			LOGGER.info("Cache activated: HAZELCAST");
+			cacheManager.addNearLayer(hazelcastCacheManager);		
+		} 
+		if (redisCacheConfiguration.isActive()) {
+			LOGGER.info("Cache activated: REDIS");
+			cacheManager.addRemoteLayer(hazelcastCacheManager);	
 		}
+		return cacheManager;
 	}
 }

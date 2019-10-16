@@ -75,6 +75,22 @@ public class TwoLayerCacheManagerImpl implements CacheManager, InitializingBean 
 		this.currentLayer = currentLayer;
 		this.nextLayer = nextLayer;
 	}
+	
+	/**
+	 * Construct a CompositeCacheManager add later the given delegate CacheManagers.
+	 * 
+	 */
+	public TwoLayerCacheManagerImpl() {
+	}
+	
+	public void addNearLayer(CacheManager nearLayer) {
+		this.currentLayer = nearLayer;
+	}
+	
+	public void addRemoteLayer(CacheManager remoteLayer) {
+		this.nextLayer = remoteLayer;
+	}
+	
 
 
 	// Lazy cache initialization on access
@@ -90,7 +106,12 @@ public class TwoLayerCacheManagerImpl implements CacheManager, InitializingBean 
 			synchronized (this.cacheMap) {
 				cache = this.cacheMap.get(name);
 				if (cache == null) {
-					cache = new TwoLayerCacheImpl(name, currentLayer.getCache(name), nextLayer.getCache(name));
+					//TODO Si no se ha definido cache remota se usa la local como remota, esto implica que se hagan dos veces las operaciones de get, put, delete
+					if(nextLayer == null) {
+						cache = new TwoLayerCacheImpl(name, currentLayer.getCache(name), currentLayer.getCache(name));
+					} else {
+						cache = new TwoLayerCacheImpl(name, currentLayer.getCache(name), nextLayer.getCache(name));
+					}
 					this.cacheMap.put(name, cache);
 					updateCacheNames(name);
 				}
@@ -119,8 +140,12 @@ public class TwoLayerCacheManagerImpl implements CacheManager, InitializingBean 
 	@Override
 	public Collection<String> getCacheNames() {
 		Set<String> names = new LinkedHashSet<>();
-		names.addAll(currentLayer.getCacheNames());
-		names.addAll(nextLayer.getCacheNames());
+		if(currentLayer != null) {
+			names.addAll(currentLayer.getCacheNames());
+		}
+		if(nextLayer != null) {
+			names.addAll(nextLayer.getCacheNames());
+		} 
 		return Collections.unmodifiableSet(names);
 	}
 }

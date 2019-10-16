@@ -82,6 +82,11 @@ public class RedisConfiguration extends CachingConfigurerSupport {
     
     @Value("${spring.cache.redis.time-to-live.seconds}")
     private long ttlSeconds;
+    
+    
+    @Value("${spring.redis.active}")
+	/** The parameter to activate or deactivate the caffeine cache. */
+	public boolean active;
 
     /**
      * Connection factory

@@ -29,9 +29,8 @@ spring:
      leak-detection-threshold: 0
        
   cache:
-    two-layer: ${TWO_LAYER_CACHE}    
     hazelcast: 
-      active: true
+      active: false
       configurations:
         - cacheName: cameras/ByCountryAndInstallation
           maximumSize: 200000
@@ -58,7 +57,7 @@ spring:
           #timeToLiveSeconds: #SECONDS
           #maxIdleSeconds: #SECONDS
     caffeine:
-      active: false
+      active: true
       configurations:
         - cacheName: cameras/ByCountryAndInstallation
           #initialCapacity:
@@ -117,6 +116,7 @@ spring:
           #refreshAfterWrite: #SECONDS
           #concurrencyLevel:
     redis:
+      active: false
       time-to-live: 
         seconds: -1    
       cache-null-values: false  
