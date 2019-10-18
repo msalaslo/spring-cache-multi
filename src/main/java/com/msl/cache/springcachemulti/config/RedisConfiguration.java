@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.context.annotation.Bean;
@@ -25,8 +26,8 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 
 import com.msl.cache.springcachemulti.domain.entity.Camera;
 import com.msl.cache.springcachemulti.pubsub.MessagePublisher;
-import com.msl.cache.springcachemulti.pubsub.RedisMessagePublisher;
-import com.msl.cache.springcachemulti.pubsub.RedisMessageSubscriber;
+import com.msl.cache.springcachemulti.pubsub.impl.RedisMessagePublisherImpl;
+import com.msl.cache.springcachemulti.pubsub.impl.RedisMessageSubscriberImpl;
 
 import lombok.Data;
 
@@ -217,12 +218,14 @@ public class RedisConfiguration extends CachingConfigurerSupport {
 	}
 	
     @Bean
-    MessageListenerAdapter messageListener(RedisMessageSubscriber suscriber) {
+    @ConditionalOnProperty(value = "spring.cache.redis.active", havingValue = "true")
+    MessageListenerAdapter messageListener(RedisMessageSubscriberImpl suscriber) {
         return new MessageListenerAdapter(suscriber);
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(RedisMessageSubscriber suscriber) {
+    @ConditionalOnProperty(value = "spring.cache.redis.active", havingValue = "true")
+    RedisMessageListenerContainer redisContainer(RedisMessageSubscriberImpl suscriber) {
         final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 //        container.setConnectionFactory(lettuceConnectionFactory());
         container.setConnectionFactory(jedisConnectionFactory());
@@ -231,11 +234,13 @@ public class RedisConfiguration extends CachingConfigurerSupport {
     }
 
     @Bean
+    @ConditionalOnProperty(value = "spring.cache.redis.active", havingValue = "true")
     MessagePublisher redisPublisher() {
-        return new RedisMessagePublisher(stringRedisTemplate(), topic());
+        return new RedisMessagePublisherImpl(stringRedisTemplate(), topic());
     }
 
     @Bean
+    @ConditionalOnProperty(value = "spring.cache.redis.active", havingValue = "true")
     ChannelTopic topic() {
         return new ChannelTopic("pubsub:queue");
     }

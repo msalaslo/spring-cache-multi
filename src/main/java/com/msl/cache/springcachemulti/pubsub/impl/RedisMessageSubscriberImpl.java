@@ -1,4 +1,4 @@
-package com.msl.cache.springcachemulti.pubsub;
+package com.msl.cache.springcachemulti.pubsub.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class RedisMessageSubscriber implements MessageListener {
+public class RedisMessageSubscriberImpl implements MessageListener {
 	
 	@Autowired
 	private CameraService cameraService;
