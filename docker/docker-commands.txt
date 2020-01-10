@@ -1,3 +1,3 @@
 cd /c/Users/miguel.salas/git/spring-cache-multi/docker
-docker build --build-arg NAME=spring-cache-multi --build-arg VERSION=1.0.0-SNAPSHOT --build-arg SERVER_PORT=8081 --build-arg MANAGEMENT_PORT=8081 --build-arg SPRING_PROFILES_ACTIVE=cloud -t spring-cache-multi .
+docker build --build-arg NAME=spring-cache-multi --build-arg VERSION=1.0.0-SNAPSHOT --build-arg SERVER_PORT=8085 --build-arg MANAGEMENT_PORT=8081 --build-arg SPRING_PROFILES_ACTIVE=cloud -t spring-cache-multi .
 docker run -i -p 8085:8085  --env-file ./env.list  spring-cache-multi

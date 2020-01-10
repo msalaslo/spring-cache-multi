@@ -1,0 +1,57 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: spring-cache-multi-ms
+  labels:
+    app: spring-cache-multi
+spec:
+  selector:
+    matchLabels:
+      app: spring-cache-multi
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: spring-cache-multi
+        tier: backend
+    spec:
+      containers:
+      - name: spring-cache-multi-container
+        image: msalaslo/spring-cache-multi:2.0
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: server.port
+          value: "8085"
+        - name: spring.cache.hazelcast.active
+          value: "false" 
+        - name: spring.cache.caffeine.active
+          value: "true"
+        - name: spring.redis.active
+          value: "false" 
+        - name: spring.profiles.active 
+          value: "local"
+        - name: async.executor.core-pool-size 
+          value: "1000" 
+        - name: async.executor.max-pool-size
+          value: "1000" 
+        - name: async.executor.queue-capacity
+          value: "10000"
+        - name: REDIS_DATABASE
+          value: "1" 
+        - name: REDIS_HOST
+          value: "pre-cam-scorr-cache.ilqfxs.ng.0001.euw1.cache.amazonaws.com" 
+        - name: REDIS_PORT
+          value: "6379" 
+        - name: REDIS_PASSWORD
+          value: "" 
+        - name: REDIS_SSL
+          value: "true" 
+        - name: REDIS_CLUSTER_NODES
+          value: "pre-cam-scorr-cache.ilqfxs.ng.0001.euw1.cache.amazonaws.com:6379"
+         
+        ports:
+        - containerPort: 8085

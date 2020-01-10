@@ -14,12 +14,19 @@ spring:
         url: http://localhost:${server.port}${server.servlet.context-path}/${spring.boot.admin.context-path}      ui:        title: SD Multi Layer Cache
   
   jpa:
-    #database-platform: org.hibernate.dialect.Oracle10gDialect
+    database-platform: org.hibernate.dialect.Oracle10gDialect
+    #database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
     open-in-view: true
   datasource:
+    #url: jdbc:h2:mem:example-app;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    #platform: h2
+    #username: sa
+    #password:
+    #driverClassName: org.h2.Driver
     type: com.zaxxer.hikari.HikariDataSource 
     url: jdbc:oracle:thin:@es1prerac03-scan:1521/PROTMPRE_SRV.sp.securitasdirect.local
+    #url: jdbc:oracle:thin:@10.46.88.78:1521/PROTMPRE_SRV.sp.securitasdirect.local
     username: RS_SCORR
     password: RS_SCORR
     driver-class-name: oracle.jdbc.OracleDriver
@@ -156,5 +163,7 @@ async:
 # HEALTH INDICATORS
 # =========================
 management:
+  endpoint:
+    restart:      enabled: true
   endpoints:
     web:      exposure:        include: "*"
