@@ -9,9 +9,13 @@ server:
 ## then change to "update" which just updates the schema when necessary
 #spring.jpa.hibernate.ddl-auto=create
 spring:
-  boot:    admin:      context-path: /admin
+  boot:
+    admin:
+      context-path: /admin
       client:
-        url: http://localhost:${server.port}${server.servlet.context-path}/${spring.boot.admin.context-path}      ui:        title: SD Multi Layer Cache
+        url: http://localhost:${server.port}${server.servlet.context-path}/${spring.boot.admin.context-path}
+      ui:
+        title: SD Multi Layer Cache
   
   jpa:
     #database-platform: org.hibernate.dialect.Oracle10gDialect
@@ -19,11 +23,12 @@ spring:
     open-in-view: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource 
-    url: jdbc:oracle:thin:@es1prerac03-scan:1521/PROTMPRE_SRV.sp.securitasdirect.local
-    username: RS_SCORR
-    password: RS_SCORR
+    url: ${DATABASE_JDBC_URL}    
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
     driver-class-name: oracle.jdbc.OracleDriver
-    hikari:      maximum-pool-size: 200
+    hikari:
+      maximum-pool-size: 200
       connection-test-query: SELECT 1 FROM DUAL
       connection-timeout: 3000
       leak-detection-threshold: 0
@@ -130,7 +135,9 @@ spring:
     timeout: 2000 # Connection timeout in milliseconds.
     pool:
       enabled: true
-    jedis:      pool:        max-active: -1 # Max number of connections that can be allocated by the pool at a given time. Use a negative value for no limit.
+    jedis:
+      pool:
+        max-active: -1 # Max number of connections that can be allocated by the pool at a given time. Use a negative value for no limit.
         max-idle: -1 # Max number of "idle" connections in the pool. Use a negative value to indicate an unlimited number of idle connections.
         max-wait: -1 # Maximum amount of time (in milliseconds) a connection allocation should block before throwing an exception when the pool is exhausted. Use a negative value to block indefinitely.
         min-idle: 0 # Target for the minimum number of idle connections to maintain in the pool. This setting only has an effect if it is positive.
@@ -157,4 +164,6 @@ async:
 # =========================
 management:
   endpoints:
-    web:      exposure:        include: "*"
+    web:
+      exposure:
+        include: "*"
