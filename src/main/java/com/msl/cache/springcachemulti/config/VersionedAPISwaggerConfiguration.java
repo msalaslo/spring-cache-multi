@@ -41,7 +41,7 @@ public class VersionedAPISwaggerConfiguration {
 	@Autowired
 	private ServletContext servletContext;
 	
-	private static final String GROUP_NAME = "routing-service";
+	private static final String GROUP_NAME = "cache-service";
 	private static final String BASE_PACKAGE = "com.msl.cache.springcachemulti.api";
 	private static final String APIM_PREFIX = "APIM";
 	private static final String V10 = "v1.0";
@@ -85,12 +85,12 @@ public class VersionedAPISwaggerConfiguration {
         }
 
     	private ApiInfo getApiInfo(String version) {
-    		return new ApiInfo("Camera Correlation System API", "Camera Correlation System API documentation", version,
+    		return new ApiInfo("Double Cache Layer API", "Double Cache Layer  API documentation", version,
     				"Terms of service based into company terms of use",
-    				new Contact("ARQ IT", "https://faas.securitasdirect.local/",
-    						"SP.DG.ITM2MPlatformDev@securitasdirect.es"),
-    				"License of API for Securitas Direct use only", 
-    				"License of API for Securitas Direct use only",
+    				new Contact("MSALASLO", "https://github.com/msalaslo",
+    						"msalaslo@gmail.com"),
+    				"", 
+    				"",
     				Collections.emptyList());
     	}
     }
