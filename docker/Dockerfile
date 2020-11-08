@@ -5,22 +5,22 @@
 # (1) JAR file containing the microservice compiled code.
 #
 # Pull base image
-FROM faas.securitasdirect.local:1443/openjdk:8-jre-alpine
+FROM openjdk:8-jre-alpine
 
 # Maintainer
 # ----------
-LABEL maintainer="FaaS <faas@securitasdirect.es>"
+LABEL maintainer="Miguel Salal <msalaslo@gmail.com>"
 
 VOLUME /tmp
 
 
-# Create verisure group and user and give permissions over logs folder.
-RUN addgroup verisure \
-    && adduser -u 1000 -s /bin/sh -D -G verisure verisure \
+# Create a group and user and give permissions over logs folder.
+RUN addgroup cache \
+    && adduser -u 1000 -s /bin/sh -D -G cache cache \
     && mkdir /logs \
-    && chown verisure:verisure /logs \
+    && chown cache:cache /logs \
     && chmod a+rw /logs
-USER verisure
+USER cache
 
 # Required build arguments
 ARG NAME
