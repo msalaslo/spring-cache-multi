@@ -2,9 +2,7 @@ package com.msl.cache.springcachemulti.api.dto;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,30 +23,27 @@ public class CameraDTO extends BaseDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(notes = "serial, the identifier", required = true)
+//    @ApiModelProperty(notes = "serial, the identifier", required = true)
 	public String serial;
-    
-    @ApiModelProperty(notes = "id autoincremental", required = true)
-	public String id;
-    
-    @ApiModelProperty(notes = "Country code", required = true)
+        
+//    @ApiModelProperty(notes = "Country code", required = true)
 	public String countryCode;
     
-    @ApiModelProperty(notes = "Installation id", required = true)
+//    @ApiModelProperty(notes = "Installation id", required = true)
 	public String installationId;
     
-    @ApiModelProperty(notes = "Zone", required = true)
+//    @ApiModelProperty(notes = "Zone", required = true)
 	public String zone;
     
-    @ApiModelProperty(notes = "Alias", required = true)
+//    @ApiModelProperty(notes = "Alias", required = true)
     public String alias;
     
-    @ApiModelProperty(notes = "Creation time", required = true)
+//    @ApiModelProperty(notes = "Creation time", required = true)
 	public Date creationTime;
     
-    @ApiModelProperty(notes = "Last update time", required = true)
+//    @ApiModelProperty(notes = "Last update time", required = true)
 	public Date lastUpdateTime;
     
-    @ApiModelProperty(notes = "Number of VOSS devices", required = true)
+//    @ApiModelProperty(notes = "Number of VOSS devices", required = true)
 	public String vossServices;
 }

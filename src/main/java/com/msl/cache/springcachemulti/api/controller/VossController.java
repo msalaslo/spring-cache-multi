@@ -12,7 +12,6 @@ import com.msl.cache.springcachemulti.api.dto.CameraDTO;
 import com.msl.cache.springcachemulti.api.dto.PageDTO;
 import com.msl.cache.springcachemulti.service.CameraService;
 import com.msl.cache.springcachemulti.service.CameraServiceAsync;
-import com.msl.cache.springcachemulti.service.CameraServicePubSub;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,9 +25,6 @@ public class VossController {
 	
 	@Autowired
 	CameraServiceAsync serviceAsync;
-	
-	@Autowired
-	CameraServicePubSub servicePubSub;
 	
 	@GetMapping(path = "/vosses/page", produces = "application/json")
 	public ResponseEntity<PageDTO<CameraDTO>> findVossesPaginated(@RequestParam(required = true) final Integer page,

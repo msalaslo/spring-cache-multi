@@ -16,15 +16,10 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
 import com.msl.cache.springcachemulti.domain.entity.Camera;
-import com.msl.cache.springcachemulti.pubsub.MessagePublisher;
-import com.msl.cache.springcachemulti.pubsub.RedisMessagePublisher;
-import com.msl.cache.springcachemulti.pubsub.RedisMessageSubscriber;
 
 import lombok.Data;
 
@@ -209,25 +204,6 @@ public class RedisConfiguration {
 		return template;
 	}
 	
-    @Bean
-    MessageListenerAdapter messageListener(RedisMessageSubscriber suscriber) {
-        return new MessageListenerAdapter(suscriber);
-    }
-
-    @Bean
-    RedisMessageListenerContainer redisContainer(RedisMessageSubscriber suscriber) {
-        final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-//        container.setConnectionFactory(lettuceConnectionFactory());
-        container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(messageListener(suscriber), topic());
-        return container;
-    }
-
-    @Bean
-    MessagePublisher redisPublisher() {
-        return new RedisMessagePublisher(stringRedisTemplate(), topic());
-    }
-
     @Bean
     ChannelTopic topic() {
         return new ChannelTopic("pubsub:queue");

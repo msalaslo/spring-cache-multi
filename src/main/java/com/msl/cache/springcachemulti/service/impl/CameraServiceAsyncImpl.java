@@ -30,8 +30,8 @@ public class CameraServiceAsyncImpl implements CameraServiceAsync {
 	}
 
 	@Async("customAsyncExecutor")
-	public void findById(String id) {
-		service.findById(id);
+	public void findBySerial(String serial) {
+		service.findBySerial(serial);
 	}
 	
 	@Async("customAsyncExecutor")

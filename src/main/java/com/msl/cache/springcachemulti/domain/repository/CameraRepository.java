@@ -19,10 +19,12 @@ import com.msl.cache.springcachemulti.domain.entity.Camera;
  */
 @Repository
 public interface CameraRepository extends PagingAndSortingRepository<Camera, String>{
+	public Optional<Camera> findBySerial(String serial);
 	public Optional<Camera> findByCountryCodeAndInstallationIdAndZone(String countrCode, String installationId, String zone);
 	public List<Camera> findByCountryCodeAndInstallationId(String countrCode, String installationId);
 	public Page<Camera> findByZoneStartingWith(String zoneStarting, Pageable pageable);
 	public List<Camera> findByCountryCodeAndInstallationIdAndZoneStartingWith(String country, String installation, String zoneStarting);
 	@Query(value = "SELECT c.serial FROM Camera c")
 	public List<String> findAllKeysWithPagination(Pageable pageable);
+	public boolean deleteBySerial(String serial);
 }

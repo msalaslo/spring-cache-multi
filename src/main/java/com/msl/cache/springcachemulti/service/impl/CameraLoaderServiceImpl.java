@@ -61,7 +61,7 @@ class CameraLoaderServiceImpl implements CameraLoaderService {
 		String serial = cameraDTO.getSerial();
 		cameraServiceAsync.findByCountryAndInstallation(country, installation);
 		cameraServiceAsync.findByCountryAndInstallationAndZone(country, installation, zone);
-		cameraServiceAsync.findById(serial);
+		cameraServiceAsync.findBySerial(serial);
 		//Para la PoC: Comentado porque de momento no hay voss, evitamos hacer consultas a la BBDD que no se cachean porque siempre devuelve null
 //		cameraServiceAsync.findVossDevicesByCountryAndInstallation(country, installation);
 	}

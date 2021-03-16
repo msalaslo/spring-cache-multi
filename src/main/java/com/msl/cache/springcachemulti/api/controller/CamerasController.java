@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,14 +24,19 @@ import com.msl.cache.springcachemulti.api.dto.CameraDTO;
 import com.msl.cache.springcachemulti.api.dto.PageDTO;
 import com.msl.cache.springcachemulti.service.CameraService;
 import com.msl.cache.springcachemulti.service.CameraServiceAsync;
-import com.msl.cache.springcachemulti.service.CameraServicePubSub;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
+@Validated
+@Tag(name = "Cameras CRUD")
 @RequestMapping("/v1.0")
 public class CamerasController {
 
@@ -40,14 +46,12 @@ public class CamerasController {
 	@Autowired
 	CameraServiceAsync serviceAsync;
 	
-	@Autowired
-	CameraServicePubSub servicePubSub;
-
-	@GetMapping(path = "/cameras/{id}")
-	@ApiOperation(value = "Returns a Camera by serial number (ID)")
-	public ResponseEntity<CameraDTO> getById(@ApiParam("Serial of the Camera to be obtained. Cannot be empty.") @PathVariable(value = "id", required = true) final String id) {
-		LOGGER.info("Finding cameras by id (serial): {}", id);
-		Optional<CameraDTO> camera = service.findById(id);
+	@GetMapping(path = "/cameras/{serial}")
+	@Operation(description = "Returns a Camera by serial number (ID)", responses = {
+			@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = CameraDTO.class))), responseCode = "200") })
+	public ResponseEntity<CameraDTO> getById(@PathVariable(name="serial", required = true) final String serial) {
+		LOGGER.info("Finding cameras by serial (id): {}", serial);
+		Optional<CameraDTO> camera = service.findBySerial(serial);
 		if (camera.isPresent()) {
 			return new ResponseEntity<CameraDTO>(camera.get(), HttpStatus.OK);
 		} else {
@@ -91,7 +95,7 @@ public class CamerasController {
 			@RequestParam(required = true) final Integer size, @RequestParam(required = false) final String sort) {
 		LOGGER.info("Finding all cameras page: {} and size {}", page, size);
 		List<String> keys = service.findAllKeys(page, size);
-		List<CameraDTO> cameras = keys.stream().map(service::findById).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+		List<CameraDTO> cameras = keys.stream().map(service::findBySerial).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
 		return new ResponseEntity<List<CameraDTO>>(cameras, HttpStatus.OK);
 	}
 
@@ -109,17 +113,17 @@ public class CamerasController {
 		return camera;
 	}
 
-	@PutMapping(path = "/cameras/{id}", consumes = "application/json", produces = "application/json")
+	@PutMapping(path = "/cameras/{serial}", consumes = "application/json", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
-	public CameraDTO update(@RequestBody CameraDTO newCamera, @PathVariable String id) {
-		LOGGER.info("Finding cameras by id..." + id);
-		return service.update(newCamera, id);
+	public CameraDTO update(@RequestBody CameraDTO newCamera, @PathVariable String serial) {
+		LOGGER.info("Finding cameras by serial..." + serial);
+		return service.update(newCamera, serial);
 	}
 
-	@DeleteMapping(path = "/cameras/{id}", produces = "application/json")
+	@DeleteMapping(path = "/cameras/{serial}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
-	void delete(@PathVariable String id) {
-		servicePubSub.deleteById(id);
+	void delete(@PathVariable String serial) {
+		service.deleteById(serial);
 	}
 	
 	@DeleteMapping(path = "/cameras/", produces = "application/json")

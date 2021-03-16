@@ -24,7 +24,6 @@ public class Camera implements Serializable{
 
 	@Id
 	public String serial;
-	public String id;
 	public String countryCode;
 	public String installationId;
 	public String zone;

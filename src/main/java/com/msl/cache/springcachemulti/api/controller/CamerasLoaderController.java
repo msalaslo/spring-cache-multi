@@ -15,7 +15,7 @@ public class CamerasLoaderController {
 	@Autowired
 	CameraLoaderService service;
 
-	@GetMapping(path = "/loader-cameras/load")
+	@GetMapping(path = "/v1.0/loader-cameras/load")
 	public void loadRepositoryToCache() {
 		LOGGER.info("Loading cameras....");
 		service.loadRespoitoryToCache();

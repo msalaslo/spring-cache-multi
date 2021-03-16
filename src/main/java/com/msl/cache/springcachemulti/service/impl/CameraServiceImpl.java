@@ -68,10 +68,10 @@ public class CameraServiceImpl implements CameraService {
 		return cameraConverter.toListCameraDto(cameras);
 	}
 
-	@Cacheable(value = "cameras/BySerial", key = "#id", cacheManager = "cacheManager", unless = "#result == null")
-	public Optional<CameraDTO> findById(String id) {
-		LOGGER.debug("findById:" + id);
-		Optional<Camera> camera = repository.findById(id);
+	@Cacheable(value = "cameras/BySerial", key = "#serial", cacheManager = "cacheManager", unless = "#result == null")
+	public Optional<CameraDTO> findBySerial(String serial) {
+		LOGGER.debug("findBySerial:" + serial);
+		Optional<Camera> camera = repository.findBySerial(serial);
 		return cameraConverter.toOptionalCameraDto(camera);
 	}
 
@@ -114,48 +114,48 @@ public class CameraServiceImpl implements CameraService {
 		return cameras;
 	}
 
-	@CachePut(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager")
-	public CameraDTO update(CameraDTO camera, String id) {
-		LOGGER.debug("This method does not integrate with the database, update camera {} with id {}:", camera, id);
-		return repository.findById(id).map(newCamera -> {
+	@CachePut(key = "#serial", value = "cameras/BySerial", cacheManager = "cacheManager")
+	public CameraDTO update(CameraDTO camera, String serial) {
+		LOGGER.debug("This method does not integrate with the database, update camera {} with id {}:", camera, serial);
+		return repository.findBySerial(serial).map(newCamera -> {
 			camera.setSerial(camera.getSerial());
 			return camera;
 		}).orElseGet(() -> {
-			camera.setId(id);
+			camera.setSerial(serial);
 			return camera;
 		});
 	}
 
-	@CacheEvict(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager")
+	@CacheEvict(key = "#serial", value = "cameras/BySerial", cacheManager = "cacheManager")
 	public void deleteById(String id) {
 		LOGGER.debug("This method does not integrate with the database, deleteById:" + id);
 	}
 
-	@CachePut(key = "#camera.id", value = "cameras/BySerial", cacheManager = "cacheManager")
+	@CachePut(key = "#camera.serial", value = "cameras/BySerial", cacheManager = "cacheManager")
 	public Camera createInRepository(Camera camera) {
 		LOGGER.debug("create:" + camera);
 		return repository.save(camera);
 	}
 
-	@CachePut(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager")
-	public CameraDTO updateInRepository(CameraDTO camera, String id) {
-		LOGGER.debug("update camera {} with id {}:", camera, id);
+	@CachePut(key = "#serial", value = "cameras/BySerial", cacheManager = "cacheManager")
+	public CameraDTO updateInRepository(CameraDTO camera, String serial) {
+		LOGGER.debug("update camera {} with id {}:", camera, serial);
 		Camera cameraEntity = cameraConverter.toCameraEntity(camera);
-		return repository.findById(id).map(newCamera -> {
+		return repository.findBySerial(serial).map(newCamera -> {
 			camera.setSerial(camera.getSerial());
 			Camera newCameraEntity = repository.save(cameraEntity);
 			return cameraConverter.toCameraDto(newCameraEntity);
 		}).orElseGet(() -> {
-			camera.setId(id);
+			camera.setSerial(serial);
 			Camera newCameraEntity = repository.save(cameraEntity);
 			return cameraConverter.toCameraDto(newCameraEntity);
 		});
 	}
 
-	@CacheEvict(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager")
-	public void deleteByIdInRepository(String id) {
-		LOGGER.debug("deleteById:" + id);
-		repository.deleteById(id);
+	@CacheEvict(key = "#serial", value = "cameras/BySerial", cacheManager = "cacheManager")
+	public void deleteBySerialInRepository(String serial) {
+		LOGGER.debug("deleteBySerial:" + serial);
+		repository.deleteBySerial(serial);
 	}
 	
 	
