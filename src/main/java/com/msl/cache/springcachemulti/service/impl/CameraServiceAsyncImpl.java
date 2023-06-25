@@ -35,11 +35,6 @@ public class CameraServiceAsyncImpl implements CameraServiceAsync {
 	}
 	
 	@Async("customAsyncExecutor")
-	public void findVossDevicesByCountryAndInstallation(String country, String installation) {
-		service.findVossDevicesByCountryAndInstallation(country, installation);
-	}
-	
-	@Async("customAsyncExecutor")
 	public void put(CameraDTO cameraDTO) {
 		service.put(cameraDTO);
 	}

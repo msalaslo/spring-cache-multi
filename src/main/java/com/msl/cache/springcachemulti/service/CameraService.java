@@ -18,7 +18,5 @@ public interface CameraService {
 	public PageDTO<CameraDTO> findAll(int page, int pageSize);
 	public PageDTO<CameraDTO> findAllNoCache(int page, int pageSize);
 	public List<String> findAllKeys(int page, int pageSize);
-	public PageDTO<CameraDTO> findAllVoss(int page, int pageSize);
-	public Iterable<CameraDTO> findVossDevicesByCountryAndInstallation(String country, String installation);
 	public long count();
 }

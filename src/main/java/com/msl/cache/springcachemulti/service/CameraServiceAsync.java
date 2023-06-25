@@ -9,6 +9,5 @@ public interface CameraServiceAsync {
 	public void findByCountryAndInstallation(String country, String installation);
 	public void findByCountryAndInstallationAndZone(String country, String installation, String zone);	
 	public void findAll(int page, int pageSize);
-	public void findVossDevicesByCountryAndInstallation(String country, String installation);
 	public long count();
 }
