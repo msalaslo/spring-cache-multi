@@ -12,9 +12,6 @@ import lombok.NoArgsConstructor;
 /**
  * Sample DTO object. <b>Please remove for actual project implementation.</b>
  *
- * @since 1.0.0
- * @author FaaS [faas@securitasdirect.es]
- *
  */
 @Data
 @NoArgsConstructor

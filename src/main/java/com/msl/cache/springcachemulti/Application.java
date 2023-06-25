@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Application bootstrap class.
  *
- * @since 1.0.0
- * @author FaaS [faas@securitasdirect.es]
  */
 @Slf4j
 @SpringBootApplication

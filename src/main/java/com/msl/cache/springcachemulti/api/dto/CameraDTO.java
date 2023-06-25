@@ -2,7 +2,6 @@ package com.msl.cache.springcachemulti.api.dto;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -13,8 +12,6 @@ import lombok.NoArgsConstructor;
 /**
  * Sample DTO object. <b>Please remove for actual project implementation.</b>
  *
- * @since 1.0.0
- * @author FaaS [faas@securitasdirect.es]
  *
  */
 @Data

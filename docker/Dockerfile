@@ -1,11 +1,10 @@
-# This is the Dockerfile reference for Spring based microservices. Multi-Stage feature is used to build image.
+# This is the Dockerfile 
 #
 # REQUIRED FILES TO BUILD THIS IMAGE
 # ----------------------------------
 # (1) JAR file containing the microservice compiled code.
  
 # Builder Image
-#FROM docker-sd.faas.securitasdirect.local/openjdk:8-jdk-alpine as build
 FROM openjdk:8-jdk-alpine as build
 # Required build arguments
 ARG NAME
@@ -16,20 +15,17 @@ RUN jar -xf $NAME.jar
  
  
 # Base Image
-#FROM docker-sd.faas.securitasdirect.local/openjdk:8-jre-alpine
 FROM openjdk:8-jre-alpine
-# Maintainer
-LABEL maintainer="FaaS <faas@securitasdirect.es>"
 # Required build arguments
 ARG NAME
 VOLUME /tmp
-# Create verisure group and user and give permissions over logs folder.
-RUN addgroup verisure \
-&& adduser -u 1000 -s /bin/sh -D -G verisure verisure \
+# Create imguser group and user and give permissions over logs folder.
+RUN addgroup imguser \
+&& adduser -u 1000 -s /bin/sh -D -G imguser imguser \
 && mkdir /logs \
-&& chown verisure:verisure /logs \
+&& chown imguser:imguser /logs \
 && chmod a+rw /logs
-USER verisure
+USER imguser
 # Set environment variables
 ENV ARTIFACT_NAME=$NAME \
 SERVER_PORT=8080 \

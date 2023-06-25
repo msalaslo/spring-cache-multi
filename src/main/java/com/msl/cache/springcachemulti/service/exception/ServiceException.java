@@ -3,8 +3,6 @@ package com.msl.cache.springcachemulti.service.exception;
 /**
  * Class for handling service layer exceptions in a common way.
  *
- * @since 1.0.0
- * @author FaaS [faas@securitasdirect.es]
  */
 public class ServiceException extends RuntimeException {
 	

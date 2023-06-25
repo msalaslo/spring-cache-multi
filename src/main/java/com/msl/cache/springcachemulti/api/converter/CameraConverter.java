@@ -14,7 +14,6 @@ import com.msl.cache.springcachemulti.domain.entity.Camera;
  * Camera converter
  *
  * @since 1.0.0
- * @author FaaS [faas@securitasdirect.es]
  */
 @Mapper(componentModel = "spring")
 public abstract class CameraConverter {

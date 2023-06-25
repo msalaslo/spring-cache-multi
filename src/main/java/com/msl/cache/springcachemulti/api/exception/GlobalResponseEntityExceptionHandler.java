@@ -18,8 +18,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 /**
  * Generic error handling mechanism.
  *
- * @since 1.0.0
- * @author FaaS [faas@securitasdirect.es]
  */
 @ControllerAdvice
 public class GlobalResponseEntityExceptionHandler extends ResponseEntityExceptionHandler  {

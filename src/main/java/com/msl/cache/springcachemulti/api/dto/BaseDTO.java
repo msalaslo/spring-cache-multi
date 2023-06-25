@@ -9,8 +9,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * Abstract Data Transfer Object (DTO) to be used as the parent of all DTOs in the API layer. It contains the hashCode,
  * toString and equals methods making use of the Apache Commons Lang3 library through its builder classes.
  *
- * @since 1.0.0
- * @author FaaS [faas@securitasdirect.es]
  */
 public class BaseDTO {
     protected BaseDTO() {

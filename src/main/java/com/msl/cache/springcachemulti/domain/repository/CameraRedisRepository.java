@@ -10,10 +10,6 @@ import com.msl.cache.springcachemulti.domain.entity.Camera;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * @since 1.0.0
- * @author FaaS [faas@securitasdirect.es]
- */
 @Slf4j
 @Component
 public class CameraRedisRepository {

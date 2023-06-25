@@ -14,8 +14,6 @@ import com.msl.cache.springcachemulti.domain.entity.Camera;
 
 /**
  * Camera DAO/Repository
- * @since 1.0.0
- * @author FaaS [faas@securitasdirect.es]
  */
 @Repository
 public interface CameraRepository extends PagingAndSortingRepository<Camera, String>{
