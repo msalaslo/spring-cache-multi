@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.msl.cache.springcachemulti.api.dto.CameraDTO;
 import com.msl.cache.springcachemulti.api.dto.PageDTO;
 import com.msl.cache.springcachemulti.service.CameraService;
-import com.msl.cache.springcachemulti.service.CameraServiceAsync;
 import com.msl.cache.springcachemulti.service.CameraServicePubSub;
 
 import io.swagger.annotations.ApiOperation;
@@ -36,9 +35,6 @@ public class CamerasController {
 
 	@Autowired
 	CameraService service;
-	
-	@Autowired
-	CameraServiceAsync serviceAsync;
 	
 	@Autowired
 	CameraServicePubSub servicePubSub;

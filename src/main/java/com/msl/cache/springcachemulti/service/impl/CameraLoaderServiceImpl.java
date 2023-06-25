@@ -4,14 +4,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.msl.cache.springcachemulti.api.dto.CameraDTO;
 import com.msl.cache.springcachemulti.api.dto.PageDTO;
 import com.msl.cache.springcachemulti.service.CameraLoaderService;
 import com.msl.cache.springcachemulti.service.CameraService;
-import com.msl.cache.springcachemulti.service.CameraServiceAsync;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,12 +20,8 @@ class CameraLoaderServiceImpl implements CameraLoaderService {
 	@Autowired
 	CameraService cameraService;
 	
-	@Autowired
-	CameraServiceAsync cameraServiceAsync;
-
 	private int pageSize = 100;
 
-	@Async("customAsyncExecutor")
 	public void loadRespoitoryToCache() {
 		long numCameras = cameraService.count();
 		int numPages = (new Long(numCameras).intValue() / pageSize) + 1;
@@ -48,7 +42,7 @@ class CameraLoaderServiceImpl implements CameraLoaderService {
 		for (Iterator<CameraDTO> iterator = cameras.iterator(); iterator.hasNext();) {
 			CameraDTO cameraDTO = (CameraDTO) iterator.next();
 			//Esto pone en cache las que camaras que van de una en una (serial y country+installation+zone)
-			cameraServiceAsync.put(cameraDTO);
+			cameraService.put(cameraDTO);
 			//Esto pone en cache las que camaras que van agrupadas (voss y country+installation)
 			findAndPut(cameraDTO);
 		}
@@ -59,11 +53,9 @@ class CameraLoaderServiceImpl implements CameraLoaderService {
 		String installation = cameraDTO.getInstallationId();
 		String zone = cameraDTO.getZone();
 		String serial = cameraDTO.getSerial();
-		cameraServiceAsync.findByCountryAndInstallation(country, installation);
-		cameraServiceAsync.findByCountryAndInstallationAndZone(country, installation, zone);
-		cameraServiceAsync.findById(serial);
-		//Para la PoC: Comentado porque de momento no hay voss, evitamos hacer consultas a la BBDD que no se cachean porque siempre devuelve null
-//		cameraServiceAsync.findVossDevicesByCountryAndInstallation(country, installation);
+		cameraService.findByCountryAndInstallation(country, installation);
+		cameraService.findByCountryAndInstallationAndZone(country, installation, zone);
+		cameraService.findById(serial);
 	}
 	
 }
