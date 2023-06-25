@@ -43,7 +43,7 @@ class CameraLoaderServiceImpl implements CameraLoaderService {
 			CameraDTO cameraDTO = (CameraDTO) iterator.next();
 			//Esto pone en cache las que camaras que van de una en una (serial y country+installation+zone)
 			cameraService.put(cameraDTO);
-			//Esto pone en cache las que camaras que van agrupadas (voss y country+installation)
+			//Esto pone en cache las que camaras que van agrupadas
 			findAndPut(cameraDTO);
 		}
 	}

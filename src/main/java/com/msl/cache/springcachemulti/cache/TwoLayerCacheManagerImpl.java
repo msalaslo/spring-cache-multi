@@ -106,9 +106,8 @@ public class TwoLayerCacheManagerImpl implements CacheManager, InitializingBean 
 			synchronized (this.cacheMap) {
 				cache = this.cacheMap.get(name);
 				if (cache == null) {
-					//TODO Si no se ha definido cache remota se usa la local como remota, esto implica que se hagan dos veces las operaciones de get, put, delete
 					if(nextLayer == null) {
-						cache = new TwoLayerCacheImpl(name, currentLayer.getCache(name), currentLayer.getCache(name));
+						cache = new TwoLayerCacheImpl(name, currentLayer.getCache(name));
 					} else {
 						cache = new TwoLayerCacheImpl(name, currentLayer.getCache(name), nextLayer.getCache(name));
 					}

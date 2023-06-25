@@ -31,6 +31,5 @@ public class Camera implements Serializable{
 	public String alias;
 	public Date creationTime;
 	public Date lastUpdateTime;
-	public String vossServices;
 
 }

@@ -75,23 +75,6 @@ public class CameraServiceImpl implements CameraService {
 		return cameraConverter.toOptionalCameraDto(camera);
 	}
 
-	@Cacheable(value = "voss/all", cacheManager = "cacheManager", unless = "#result == null")
-	public PageDTO<CameraDTO> findAllVoss(int page, int pageSize) {
-		LOGGER.debug("findVossDevices, zone starts with VS");
-		Pageable pageable = PageRequest.of(page, pageSize);
-		Page<Camera> cameraPage = repository.findByZoneStartingWith("VS", pageable);
-		PageDTO<CameraDTO> camerasDtoPage = cameraConverter.toPageCameraDto(null, cameraPage);
-		return camerasDtoPage;
-	}
-
-	@Cacheable(value = "voss/ByCountryAndInstallation", key = "#country + #installation", cacheManager = "cacheManager", unless = "#result == null or #result.size()==0")
-	public List<CameraDTO> findVossDevicesByCountryAndInstallation(String country, String installation) {
-		LOGGER.debug("findVossDevices, zone starts with VS and country is {} and installation is {}", country,
-				installation);
-		List<Camera> cameras = repository.findByCountryCodeAndInstallationIdAndZoneStartingWith(country, installation, "VS");
-		return cameraConverter.toListCameraDto(cameras);
-	}
-
 	@Caching(put = {
 			@CachePut(value = "cameras/ByCountryAndInstallationAndZone", key = "#camera.countryCode + #camera.installationId + #camera.zone", cacheManager = "cacheManager", unless = "#result == null"),
 			@CachePut(value = "cameras/BySerial", key = "#camera.serial", cacheManager = "cacheManager", unless = "#result == null") })
@@ -107,13 +90,6 @@ public class CameraServiceImpl implements CameraService {
 		return cameras;
 	}
 	
-	@Caching(put = {
-			@CachePut(value = "voss/ByCountryAndInstallation", key = "#camera.countryCode + #camera.installationId", cacheManager = "cacheManager", condition = "#camera.vossServices != null") })
-	public Iterable<CameraDTO> putVosses(Iterable<CameraDTO> cameras) {
-		LOGGER.info("PUT::This method does not create the object in the database, only has been cached:" + cameras);
-		return cameras;
-	}
-
 	@CachePut(key = "#id", value = "cameras/BySerial", cacheManager = "cacheManager", unless = "#result == null")
 	public CameraDTO update(CameraDTO camera, String id) {
 		LOGGER.debug("This method does not integrate with the database, update camera {} with id {}:", camera, id);
@@ -162,8 +138,6 @@ public class CameraServiceImpl implements CameraService {
 			@CacheEvict(value = "cameras/ByCountryAndInstallation", allEntries = true, cacheManager = "cacheManager"),
 			@CacheEvict(value = "cameras/BySerial", allEntries = true, cacheManager = "cacheManager"),
 			@CacheEvict(value = "cameras/all", allEntries = true, cacheManager = "cacheManager"),
-			@CacheEvict(value = "voss/ByCountryAndInstallation", allEntries = true, cacheManager = "cacheManager"),
-			@CacheEvict(value = "voss/all", allEntries = true, cacheManager = "cacheManager")
 		})
 	@Override
 	public void evictAllCacheValues() {}

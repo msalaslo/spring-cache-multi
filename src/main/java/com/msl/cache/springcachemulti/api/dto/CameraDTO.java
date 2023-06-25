@@ -46,6 +46,4 @@ public class CameraDTO extends BaseDTO implements Serializable {
     @ApiModelProperty(notes = "Last update time", required = true)
 	public Date lastUpdateTime;
     
-    @ApiModelProperty(notes = "Number of VOSS devices", required = true)
-	public String vossServices;
 }

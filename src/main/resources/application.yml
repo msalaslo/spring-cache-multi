@@ -62,10 +62,6 @@ spring:
           maximumSize: 200000
           #timeToLiveSeconds: #SECONDS
           #maxIdleSeconds: #SECONDS          
-        - cacheName: voss/ByCountryAndInstallation
-          maximumSize: 200000
-          #timeToLiveSeconds: #SECONDS
-          #maxIdleSeconds: #SECONDS
     caffeine:
       active: true
       configurations:
@@ -109,22 +105,6 @@ spring:
           #expireAfterWrite: #SECONDS
           #refreshAfterWrite: #SECONDS
           #concurrencyLevel:          
-        - cacheName: voss/ByCountryAndInstallation
-          #initialCapacity:
-          maximumSize: 200000
-          #maximumWeight:
-          #expireAfterAccess: #SECONDS
-          #expireAfterWrite: #SECONDS
-          #refreshAfterWrite: #SECONDS
-          #concurrencyLevel:
-        - cacheName: voss/all
-          #initialCapacity:
-          maximumSize: 20000
-          #maximumWeight:
-          #expireAfterAccess: #SECONDS
-          #expireAfterWrite: #SECONDS
-          #refreshAfterWrite: #SECONDS
-          #concurrencyLevel:
     redis:
       active: false
       time-to-live: 
@@ -154,15 +134,6 @@ spring:
       enabled: false
       master: mymaster # Name of Redis server.
       nodes: 127.0.0.1:27379 # Comma-separated list of host:port pairs.
-
-# =========================
-# ASYNC EXECUTOR
-# ========================= 
-async:
-  executor:
-      core-pool-size: 10
-      max-pool-size: 10
-      queue-capacity: 10
 
 # =========================
 # HEALTH INDICATORS
