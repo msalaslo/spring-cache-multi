@@ -34,12 +34,6 @@ spec:
           value: "false" 
         - name: spring.profiles.active 
           value: "local"
-        - name: async.executor.core-pool-size 
-          value: "1000" 
-        - name: async.executor.max-pool-size
-          value: "1000" 
-        - name: async.executor.queue-capacity
-          value: "10000"
         - name: REDIS_DATABASE
           value: "1" 
         - name: REDIS_HOST
