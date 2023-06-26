@@ -106,7 +106,7 @@ spring:
           #refreshAfterWrite: #SECONDS
           #concurrencyLevel:          
     redis:
-      active: false
+      active: true
       time-to-live: 
         seconds: -1    
       cache-null-values: false  

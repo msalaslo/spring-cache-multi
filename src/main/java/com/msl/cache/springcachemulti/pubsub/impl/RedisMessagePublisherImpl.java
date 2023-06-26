@@ -2,6 +2,7 @@ package com.msl.cache.springcachemulti.pubsub.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.msl.cache.springcachemulti.pubsub.MessagePublisher;
 
 @Service
+@Primary
 @ConditionalOnProperty(value = "spring.cache.redis.active", havingValue = "true")
 public class RedisMessagePublisherImpl implements MessagePublisher {
 
